@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Game Engine</title>
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+    <section id="hierarchy" class="panel"></section>
+    <section id="editor" class="panel">
+        <div id="scene-view">
+            <canvas id="background"></canvas>
+            <canvas id="scene"></canvas>
+        </div>
+        <div id="game-view">
+            <canvas id="game"></canvas>
+        </div>
+    </section>
+    <section id="inspector" class="panel"></section>
+    <section id="project"></section>
+    <script>require('../../controllers/main');</script>
+    <script>require('../../gameEngine.js');</script>
+</body>
+</html>

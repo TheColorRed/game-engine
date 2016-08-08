@@ -1,0 +1,56 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #292929;
+}
+canvas {
+    position: absolute;
+}
+.panel {
+    background-color: #383838;
+}
+#hierarchy {
+    width: 15%;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#scene-view {
+    position: absolute;
+    width: 50%;
+    bottom: 0;
+    top: 0;
+}
+#game-view {
+    position: absolute;
+    width: 50%;
+    bottom: 0;
+    top: 0;
+    left: 50%;
+}
+
+#editor {
+    position: absolute;
+    top: 0;
+    bottom: 15%;
+    left: 15%;
+    right: 15%;
+}
+
+#project {
+    position: absolute;
+    bottom: 0;
+    top: 85%;
+    left: 15%;
+    right: 15%;
+}
+
+#inspector {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 15%;
+    height: 100vh;
+}
