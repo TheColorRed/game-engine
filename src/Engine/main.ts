@@ -1,16 +1,17 @@
-import Obj = GameEngine.Obj;
-import Component = GameEngine.Component;
-import Behavior = GameEngine.Behavior;
-import MonoBehavior = GameEngine.MonoBehavior;
+import Obj from './core/Obj';
+import Component from './core/Component';
+import Behavior from './core/Behavior';
+import MonoBehavior from './core/MonoBehavior';
+import ObjectManager from './core/ObjectManager';
 
-import GameObject = GameEngine.GameObject;
-import Physics = GameEngine.Physics;
-import Vector3 = GameEngine.Vector3;
-import Vector2 = GameEngine.Vector2;
-import Color = GameEngine.Color;
+import GameObject from './core/GameObject';
+import Physics from './physics/Physics';
+import Vector3 from './util/Vector3';
+import Vector2 from './util/Vector2';
+import Color from './util/color/Color';
 
-import Time = GameEngine.Time;
-import Debug = GameEngine.Debug;
+import Time from './util/Time';
+import Debug from './util/Debug';
 
 class GameEngineMain {
 
@@ -58,13 +59,13 @@ class GameEngineMain {
     }
 
     protected awake(): void {
-        ItemManager.items.forEach(item => {
+        ObjectManager.items.forEach(item => {
             item.sendMessage('awake');
         });
     }
 
     protected enable(): void {
-        ItemManager.items.forEach(item => {
+        ObjectManager.items.forEach(item => {
             if (!item.lastFrameEnabled) {
                 item.sendMessage('onEnable');
             }
@@ -72,25 +73,25 @@ class GameEngineMain {
     }
 
     protected start(): void {
-        ItemManager.items.forEach(item => {
+        ObjectManager.items.forEach(item => {
             item.sendMessage('start');
         });
     }
 
     private update(): void {
-        ItemManager.items.forEach(item => {
+        ObjectManager.items.forEach(item => {
             item.sendMessage('update');
         });
     }
 
     private lateUpdate(): void {
-        ItemManager.items.forEach(item => {
+        ObjectManager.items.forEach(item => {
             item.sendMessage('lateUpdate');
         });
     }
 
     private lastCheck() {
-        ItemManager.items.forEach(item => {
+        ObjectManager.items.forEach(item => {
             if (item.shouldDisable) {
                 item.isEnabled = false;
                 item.shouldDisable = false;
@@ -108,30 +109,6 @@ class GameEngineMain {
         });
     }
 
-}
-
-class ItemManager {
-
-    protected static _items: GameObject[] = [];
-
-    public static get items(): GameObject[] {
-        return ItemManager._items;
-    }
-
-    public static setItems(items: GameObject[]) {
-        ItemManager._items = items;
-    }
-
-    public static addItem(item: GameObject) {
-        ItemManager._items.push(item);
-    }
-
-    public static removeItems(item: GameObject) {
-        var idx: number = ItemManager._items.indexOf(item);
-        if (idx > -1) {
-            ItemManager._items.splice(idx, 1);
-        }
-    }
 }
 
 new GameEngineMain().startGame();

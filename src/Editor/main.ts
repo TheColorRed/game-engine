@@ -15,7 +15,7 @@ app.on('ready', () => {
         hasShadow: true
     });
     mainWindow.maximize();
-    mainWindow.loadURL(`file://${__dirname}/../resources/views/main.html`);
+    mainWindow.loadURL(`file://${__dirname}/resources/views/main.html`);
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();

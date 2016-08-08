@@ -9,39 +9,39 @@ var tsify = require('tsify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
-gulp.task('compile', function () {
-    rmdir('./build', function (err) {
+gulp.task('build', ['compile-editor', 'compile-engine'], function () {
+    ncp('./src/Editor/resources', './build/Editor/resources', function (err) {
         if (err) { throw err; }
-    });
-    return gulp.src(['src/**/*.ts'])
-        .pipe(gulptsc())
-        .pipe(gulp.dest('build/'));
-});
-
-gulp.task('build', ['compile', 'compile-engine'], function () {
-    ncp('./src/resources', './build/resources', function (err) {
-        if (err) { throw err; }
-        asar.createPackage('./build', './bin/GameEngine.asar', function () {
+        asar.createPackage('./build', './bin/GameEditor.asar', function () {
             console.log('done.');
         });
     });
 });
 
+gulp.task('compile-editor', function () {
+    rmdir('./build', function (err) {
+        if (err) { throw err; }
+    });
+    return gulp.src(['./src/Editor/**/*.ts'])
+        .pipe(gulptsc())
+        .pipe(gulp.dest('./build/Editor'));
+});
+
 gulp.task('compile-engine', function () {
-    return gulp.src(['GameEngine/**/*.ts'])
-        .pipe(gulptsc({
-            out: 'gameEngine.js',
-            module: 'system',
-            target: 'es6',
-            removeComments: true
-        }))
-        .pipe(gulp.dest('build/'));
-    // return browserify()
-    //     .add('./GameEngine/main.ts')
-    //     .plugin(tsify, {typescript: 'ntypescript'})
-    //     .bundle()
-    //     .on('error', function (error) { throw error; })
-    //     .pipe(source('gameEngine.js'))
-    //     .pipe(buffer())
+    // return gulp.src(['src/Engine/**/*.ts'])
+    //     .pipe(gulptsc({
+    //         out: 'gameEngine.js',
+    //         module: 'system',
+    //         target: 'es6',
+    //         removeComments: true
+    //     }))
     //     .pipe(gulp.dest('build/'));
+    return browserify()
+        .add('./src/Engine/main.ts')
+        .plugin(tsify, {typescript: 'ntypescript'})
+        .bundle()
+        .on('error', function (error) { throw error; })
+        .pipe(source('gameEngine.js'))
+        .pipe(buffer())
+        .pipe(gulp.dest('build/'));
 });

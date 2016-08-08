@@ -20,13 +20,13 @@ window.addEventListener('load', () => {
     sceneBg = document.querySelector('canvas#background') as HTMLCanvasElement;
     scene = document.querySelector('canvas#scene') as HTMLCanvasElement;
     game = document.querySelector('canvas#game') as HTMLCanvasElement;
-
-    // var cam = new GameEngine.GameObject('Camera');
-
 });
 
-// Resize the scene when the window size changes
-window.addEventListener('resize', () => {
+// Resize the scene when the window size changes or loads
+window.addEventListener('resize', sceneBgRewrite);
+window.addEventListener('load', sceneBgRewrite);
+
+function sceneBgRewrite() {
     sceneBg.width = sceneView.clientWidth;
     sceneBg.height = sceneView.clientHeight;
 
@@ -42,4 +42,4 @@ window.addEventListener('resize', () => {
         context.fillStyle = pattern;
         context.fillRect(0, 0, sceneBg.width, sceneBg.height);
     }
-});
+}
