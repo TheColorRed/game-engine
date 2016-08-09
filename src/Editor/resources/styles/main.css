@@ -1,7 +1,16 @@
+* {
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+    outline: none;
+}
 body {
     padding: 0;
     margin: 0;
     background-color: #292929;
+    user-select: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
 }
 canvas {
     position: absolute;
@@ -15,6 +24,16 @@ canvas {
     position: absolute;
     left: 0;
     top: 0;
+}
+
+#hierarchy > .game-object {
+    color: #a3a3a3;
+    padding: 3px;
+    padding-left: 10px;
+    cursor: pointer;
+}
+#hierarchy > .game-object:hover {
+    background-color: #484848;
 }
 
 #scene-view {

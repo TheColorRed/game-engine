@@ -1,19 +1,3 @@
-/// <reference path="./core/MonoBehavior.ts"/>
-// const Obj = require('./core/Obj');
-// const Component = require('./core/Component');
-// const Behavior = require('./core/Behavior');
-// const MonoBehavior = require('./core/MonoBehavior');
-// const ObjectManager = require('./core/ObjectManager');
-
-// const GameObject = require('./core/GameObject');
-// const Physics = require('./physics/Physics');
-// const Vector3 = require('./util/Vector3');
-// const Vector2 = require('./util/Vector2');
-// const Color = require('./util/color/Color');
-
-// require('./util/Time');
-// const Debug = require('./util/Debug');
-
 class GameEngineMain {
 
     private lastLoopTime = this.getNanoSeconds;
@@ -97,7 +81,7 @@ class GameEngineMain {
                 item.isEnabled = false;
                 item.shouldDisable = false;
             }
-            item.getComponents().forEach(comp => {
+            item.components.forEach(comp => {
                 if (!comp.isEnabled) {
                     item.lastFrameEnabled = false;
                 } else {

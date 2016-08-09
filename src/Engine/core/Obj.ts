@@ -5,14 +5,18 @@ class Obj {
     public shouldDisable: boolean = false;
     public lastFrameEnabled: boolean = false;
 
-    protected components: Component[] = [];
+    protected _id: string = '';
+
+    public constructor() {
+        this._id = this.generateId();
+    }
 
     // public getComponents(): Component[] {
     //     return this.components;
     // }
 
-    public getInstanceId() {
-
+    public get instanceId(): string {
+        return this._id;
     }
 
     public toString(): string {
@@ -33,6 +37,10 @@ class Obj {
 
     public static instantiate() {
 
+    }
+
+    private generateId(): string {
+        return '_' + Math.random().toString(36).substr(2, 9);
     }
 
 }

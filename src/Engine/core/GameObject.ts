@@ -1,43 +1,54 @@
 class GameObject extends Obj {
 
     public tag: string = '';
+    protected _transform: Transform;
+    protected _components: Component[] = [];
 
     public constructor(name: string = 'GameObject') {
         super();
         this.name = name;
+        this._transform = this.addComponent(Transform) as Transform;
         ObjectManager.addItem(this);
+    }
+
+    public get transform(): Transform {
+        return this._transform;
+    }
+
+    public get components(): Component[] {
+        return this._components;
     }
 
     public compareTag(tagName: string): boolean {
         return this.tag == tagName;
     }
 
-    public getComponents<T extends Component>(component?: T): Component[] {
+    public getComponents<T extends Component>(component: ComponentConstructor<T>): Component[] {
         var comps: Component[] = [];
-        this.components.forEach(comp => {
-            if (comp.constructor == component.constructor){
+        this._components.forEach(comp => {
+            if (comp instanceof component){
                 comps.push(comp);
             }
         });
         return comps;
     }
 
-    public addComponent<T extends MonoBehavior>(componentName: string = '', options?: { any }): Component {
+    public addComponent<T extends Component>(ctor: ComponentConstructor<T>, options?: { any }): Component {
         let comp;
-        comp = new MonoBehavior() as T;
+        comp = new ctor();
         comp.options = options;
-        comp.name = componentName;
-        comp.setBerryObject(this);
+        comp.name = comp.constructor.name;
+        comp.setGameObject(this);
         comp.behavior = comp;
         comp.isEnabled = this.isEnabled;
-        this.components.push(comp);
+        this._components.push(comp);
         return comp;
     }
 
-    public getComponent<T extends Component>(component?: T): Component {
-        for (let i = 0; i < this.components.length; i++){
-            if (this.components[i].constructor == component.constructor) {
-                return this.components[i];
+    public getComponent<T extends Component>(component: ComponentConstructor<T>): Component {
+        for (let i = 0; i < this._components.length; i++) {
+            if (this._components[i].constructor == component.constructor) {
+                return this._components[i];
             }
         }
         return null;
@@ -53,7 +64,7 @@ class GameObject extends Obj {
     // }
 
     public sendMessage(message: string) {
-        this.components.forEach(comp => {
+        this._components.forEach(comp => {
             if ((comp.hasAwaken && message == 'awake') || (comp.hasStarted && message == 'start') || !comp.isEnabled) {
                 return;
             }

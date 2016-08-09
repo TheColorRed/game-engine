@@ -1,7 +1,13 @@
+/// <reference path="../../../build/gameEngine.d.ts"/>
 const { remote, ipcRenderer } = require('electron');
+
+// Menus
 require(__dirname + '/../resources/menus/mainMenu');
+import { hierarchyMenu } from './../resources/menus/hierarchyMenu';
 
 import { Config } from './../utils/Config';
+import { GameObjectManager } from './../utils/GameObjectManager';
+// Utilities
 import fs = require('fs');
 
 // Sections
@@ -14,6 +20,11 @@ let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement, game: HTMLCanvasElemen
 // Initialize the window
 window.addEventListener('load', () => {
     hierarchy = document.querySelector('section#hierarchy') as HTMLDivElement;
+    hierarchy.addEventListener('mousedown', (event) => {
+        if (event.button == 2) {
+            hierarchyMenu.popup();
+        }
+    });
     editor = document.querySelector('section#editor') as HTMLDivElement;
     inspector = document.querySelector('section#inspector') as HTMLDivElement;
 
@@ -82,4 +93,36 @@ ipcRenderer.on('open-project', (event, folders: string[]) => {
             });
         });
     }
+});
+
+window.addEventListener('onCreateGameobject', (event) => {
+    var createGameObject = new GameObject;
+    GameObjectManager.addItem(createGameObject);
+});
+
+window.addEventListener('onObjectManagerChanged', (event) => {
+    hierarchy.innerHTML = '';
+    var depth = 0;
+    GameObjectManager.items.forEach(gameObject => {
+        let div = document.createElement('div');
+        div.innerText = gameObject.name;
+        div.classList.add('game-object');
+        div.setAttribute('data-id', gameObject.instanceId);
+        div.addEventListener('click', (event) => {
+            window.dispatchEvent(new CustomEvent('onGameObjectSelected', { detail: div }));
+        });
+        hierarchy.appendChild(div);
+    });
+});
+
+window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
+    let target = event.detail as HTMLElement;
+    let id = target.getAttribute('data-id');
+    let gameObject = GameObjectManager.getItemById(id);
+    gameObject.components.forEach(comp => {
+        console.log(Object.getOwnPropertyNames(comp as Transform))
+        for (var key in comp) {
+            console.log(key);
+        }
+    });
 });

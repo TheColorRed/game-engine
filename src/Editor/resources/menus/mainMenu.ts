@@ -1,7 +1,7 @@
 import { remote, ipcRenderer } from 'electron';
 let Menu = remote.Menu;
 
-var menu = Menu.buildFromTemplate([
+var mainMenu = [
     {
         label: 'File',
         submenu: [
@@ -24,7 +24,10 @@ var menu = Menu.buildFromTemplate([
         label: 'GameObject',
         submenu: [
             {
-                label: 'Create Empty'
+                label: 'Create Empty',
+                click: () => {
+                    window.dispatchEvent(new CustomEvent('onCreateGameobject'));
+                }
             },
             {
                 label: 'Sprite'
@@ -64,6 +67,8 @@ var menu = Menu.buildFromTemplate([
             }
         ]
     }
-]);
+];
 
-Menu.setApplicationMenu(menu);
+Menu.setApplicationMenu(
+    Menu.buildFromTemplate(mainMenu)
+);
