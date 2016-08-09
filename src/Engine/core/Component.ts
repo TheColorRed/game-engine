@@ -1,7 +1,4 @@
-import Obj from './Obj';
-import MonoBehavior from './MonoBehavior';
-
-export default class Component extends Obj {
+class Component extends Obj {
     public options: any;
     public behavior: MonoBehavior;
 

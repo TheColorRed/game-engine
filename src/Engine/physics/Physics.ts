@@ -1,4 +1,4 @@
-export default class Physics {
+class Physics {
     public static rayCast() {
 
     }

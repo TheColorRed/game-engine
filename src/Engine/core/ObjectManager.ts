@@ -1,6 +1,4 @@
-import GameObject from './GameObject';
-
-export default class ObjectManager {
+class ObjectManager {
 
     protected static _items: GameObject[] = [];
 

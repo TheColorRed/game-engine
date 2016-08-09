@@ -1,4 +1,4 @@
-export default class Time {
+class Time {
     private static _deltaTime: number = 0;
     private static _time: number = 0;
 

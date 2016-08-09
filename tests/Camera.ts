@@ -1,5 +1,5 @@
-// class Camera extends MonoBehavior {
+class Camera extends MonoBehavior {
 
-//     public backgroundColor = Color.cornFlowerBlue;
+    public backgroundColor = Color.cornFlowerBlue;
 
-// }
+}

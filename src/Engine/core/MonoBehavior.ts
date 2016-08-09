@@ -1,5 +1,4 @@
-import Behavior from './Behavior';
-
-export default class MonoBehavior extends Behavior {
+class MonoBehavior extends Behavior {
 
 }
+// global.MonoBehavior = MonoBehavior;

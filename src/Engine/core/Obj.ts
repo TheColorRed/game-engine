@@ -1,5 +1,4 @@
-import Component from './Component';
-export default class Obj {
+class Obj {
 
     public name: string = '';
     public isEnabled: boolean = true;

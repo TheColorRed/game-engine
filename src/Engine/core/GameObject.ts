@@ -1,9 +1,4 @@
-import Obj from './Obj';
-import Component from './Component';
-import MonoBehavior from './MonoBehavior';
-import ObjectManager from './ObjectManager';
-
-export default class GameObject extends Obj {
+class GameObject extends Obj {
 
     public constructor(name: string = 'GameObject') {
         super();

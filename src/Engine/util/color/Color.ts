@@ -1,4 +1,4 @@
-export default class Color {
+class Color {
 
     public r: number;
     public g: number;

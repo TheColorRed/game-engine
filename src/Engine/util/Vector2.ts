@@ -1,6 +1,4 @@
-import Vector3 from './Vector3';
-
-export default class Vector2 extends Vector3 {
+class Vector2 extends Vector3 {
 
     public constructor(x: number, y: number) {
         super(x, y, 0);

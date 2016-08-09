@@ -28,20 +28,34 @@ gulp.task('compile-editor', function () {
 });
 
 gulp.task('compile-engine', function () {
-    // return gulp.src(['src/Engine/**/*.ts'])
-    //     .pipe(gulptsc({
-    //         out: 'gameEngine.js',
-    //         module: 'system',
-    //         target: 'es6',
-    //         removeComments: true
-    //     }))
-    //     .pipe(gulp.dest('build/'));
-    return browserify()
-        .add('./src/Engine/main.ts')
-        .plugin(tsify, {typescript: 'ntypescript'})
-        .bundle()
-        .on('error', function (error) { throw error; })
-        .pipe(source('gameEngine.js'))
-        .pipe(buffer())
+    return gulp.src([
+        'src/Engine/core/Obj.ts',
+        'src/Engine/core/Component.ts',
+        'src/Engine/core/Behavior.ts',
+        'src/Engine/core/MonoBehavior.ts',
+        'src/Engine/core/GameObject.ts',
+        'src/Engine/core/ObjectManager.ts',
+        'src/Engine/util/Time.ts',
+        'src/Engine/util/Debug.ts',
+        'src/Engine/util/color/Color.ts',
+        'src/Engine/util/Vector3.ts',
+        'src/Engine/util/Vector2.ts',
+        'src/Engine/physics/Physics.ts',
+        'src/Engine/main.ts',
+    ])
+        .pipe(gulptsc({
+            out: 'gameEngine.js',
+            module: 'system',
+            target: 'es6',
+            removeComments: true
+        }))
         .pipe(gulp.dest('build/'));
+    // return browserify()
+    //     .add('./src/Engine/main.ts')
+    //     .plugin(tsify, {typescript: 'ntypescript'})
+    //     .bundle()
+    //     .on('error', function (error) { throw error; })
+    //     .pipe(source('gameEngine.js'))
+    //     .pipe(buffer())
+    //     .pipe(gulp.dest('build/'));
 });

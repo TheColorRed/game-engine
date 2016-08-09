@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "browserify": "^13.1.0",
+    "electron-packager": "^7.5.1",
     "gulp": "^3.9.1",
     "gulp-minify": "0.0.14",
     "gulp-tsc": "^1.2.0",

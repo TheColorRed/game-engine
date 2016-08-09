@@ -1,17 +1,18 @@
-import Obj from './core/Obj';
-import Component from './core/Component';
-import Behavior from './core/Behavior';
-import MonoBehavior from './core/MonoBehavior';
-import ObjectManager from './core/ObjectManager';
+/// <reference path="./core/MonoBehavior.ts"/>
+// const Obj = require('./core/Obj');
+// const Component = require('./core/Component');
+// const Behavior = require('./core/Behavior');
+// const MonoBehavior = require('./core/MonoBehavior');
+// const ObjectManager = require('./core/ObjectManager');
 
-import GameObject from './core/GameObject';
-import Physics from './physics/Physics';
-import Vector3 from './util/Vector3';
-import Vector2 from './util/Vector2';
-import Color from './util/color/Color';
+// const GameObject = require('./core/GameObject');
+// const Physics = require('./physics/Physics');
+// const Vector3 = require('./util/Vector3');
+// const Vector2 = require('./util/Vector2');
+// const Color = require('./util/color/Color');
 
-import Time from './util/Time';
-import Debug from './util/Debug';
+// require('./util/Time');
+// const Debug = require('./util/Debug');
 
 class GameEngineMain {
 
