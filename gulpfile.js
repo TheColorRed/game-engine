@@ -23,33 +23,39 @@ gulp.task('compile-editor', function () {
         if (err) { throw err; }
     });
     return gulp.src(['./src/Editor/**/*.ts'])
-        .pipe(gulptsc())
+        .pipe(gulptsc({
+            module: 'commonjs',
+            target: 'es6',
+            outDir: './build',
+            removeComments: true
+        }))
         .pipe(gulp.dest('./build/Editor'));
 });
 
 gulp.task('compile-engine', function () {
     return gulp.src([
-        'src/Engine/core/Obj.ts',
-        'src/Engine/core/Component.ts',
-        'src/Engine/core/Behavior.ts',
-        'src/Engine/core/MonoBehavior.ts',
-        'src/Engine/core/GameObject.ts',
-        'src/Engine/core/ObjectManager.ts',
-        'src/Engine/util/Time.ts',
-        'src/Engine/util/Debug.ts',
-        'src/Engine/util/color/Color.ts',
-        'src/Engine/util/Vector3.ts',
-        'src/Engine/util/Vector2.ts',
-        'src/Engine/physics/Physics.ts',
-        'src/Engine/main.ts',
-    ])
-        .pipe(gulptsc({
-            out: 'gameEngine.js',
-            module: 'system',
-            target: 'es6',
-            removeComments: true
-        }))
-        .pipe(gulp.dest('build/'));
+        // Root of all objects
+        './src/Engine/core/Obj.ts',
+        './src/Engine/core/Component.ts',
+        './src/Engine/core/Behavior.ts',
+        './src/Engine/core/MonoBehavior.ts',
+        './src/Engine/core/GameObject.ts',
+        './src/Engine/core/ObjectManager.ts',
+        './src/Engine/util/Time.ts',
+        './src/Engine/util/Debug.ts',
+        './src/Engine/util/color/Color.ts',
+        './src/Engine/util/vector/Vector3.ts',
+        './src/Engine/util/vector/Vector2.ts',
+        './src/Engine/physics/Physics.ts',
+        './src/Engine/utils/Config.ts',
+        './src/Engine/main.ts',
+    ]).pipe(gulptsc({
+        out: 'gameEngine.js',
+        module: 'system',
+        target: 'es6',
+        removeComments: true
+    }))
+    .pipe(gulp.dest('build/'));
     // return browserify()
     //     .add('./src/Engine/main.ts')
     //     .plugin(tsify, {typescript: 'ntypescript'})

@@ -1,15 +1,16 @@
-// class Test extends MonoBehavior {
+class Test extends MonoBehavior {
 
-//     public awake() {
-//         Debug.log('awake');
-//     }
+    public awake() {
+        Debug.log('awake');
+    }
 
-//     public start() {
-//         Debug.log('start');
-//     }
+    public start() {
+        Debug.log('start');
+    }
 
-//     public update() {
-//         Debug.log('update');
-//     }
+    public update() {
+        let cam = this.gameObject.getComponent<Camera>();
+        Debug.log('update');
+    }
 
-// }
+}

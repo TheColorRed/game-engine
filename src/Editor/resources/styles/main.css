@@ -34,7 +34,7 @@ canvas {
 #editor {
     position: absolute;
     top: 0;
-    bottom: 15%;
+    bottom: 30%;
     left: 15%;
     right: 15%;
 }
@@ -42,7 +42,7 @@ canvas {
 #project {
     position: absolute;
     bottom: 0;
-    top: 85%;
+    top: 70%;
     left: 15%;
     right: 15%;
 }

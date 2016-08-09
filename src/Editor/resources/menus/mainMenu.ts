@@ -3,7 +3,16 @@ let Menu = remote.Menu;
 
 var menu = Menu.buildFromTemplate([
     {
-        label: 'File'
+        label: 'File',
+        submenu: [
+            {
+                label: 'Open Project...',
+                accelerator: 'ctrl+shift+o',
+                click: () => {
+                    ipcRenderer.send('open-project');
+                }
+            }
+        ]
     },
     {
         label: 'Edit'

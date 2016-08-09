@@ -1,5 +1,8 @@
-import { remote } from 'electron';
+const { remote, ipcRenderer } = require('electron');
 require(__dirname + '/../resources/menus/mainMenu');
+
+import { Config } from './../utils/Config';
+import fs = require('fs');
 
 // Sections
 let hierarchy: HTMLDivElement, editor: HTMLDivElement, inspector: HTMLDivElement;
@@ -43,3 +46,40 @@ function sceneBgRewrite() {
         context.fillRect(0, 0, sceneBg.width, sceneBg.height);
     }
 }
+
+function showDirContents(path: string): Promise<{ dirs: string[], files: string[] }> {
+    return new Promise(resolve => {
+        let dirs: string[] = [];
+        let files: string[] = [];
+        fs.readdir(path, (err, foundFiles) => {
+            foundFiles.forEach(file => {
+                let stats = fs.statSync(`${path}/${file}`);
+                if (stats.isDirectory()) {
+                    dirs.push(file);
+                } else if (stats.isFile()) {
+                    files.push(file);
+                } else {
+                    files.push(file);
+                }
+            });
+            dirs.sort();
+            files.sort();
+            resolve({ dirs: dirs, files: files });
+        });
+    });
+}
+
+ipcRenderer.on('open-project', (event, folders: string[]) => {
+    if (folders && folders.length > 0) {
+        Config.projectRoot = folders[0];
+        showDirContents(Config.projectRoot).then(value => {
+            console.log(value);
+            value.dirs.forEach(dir => {
+                console.log(dir);
+            });
+            value.files.forEach(file => {
+                console.log(file);
+            });
+        });
+    }
+});

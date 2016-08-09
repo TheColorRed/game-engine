@@ -7,9 +7,9 @@ class Obj {
 
     protected components: Component[] = [];
 
-    public getComponents(): Component[] {
-        return this.components;
-    }
+    // public getComponents(): Component[] {
+    //     return this.components;
+    // }
 
     public getInstanceId() {
 
