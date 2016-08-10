@@ -4,7 +4,7 @@ class Vector2 extends Vector3 {
         super(x, y, 0);
     }
 
-    public static zero(): Vector2 {
+    public static get zero(): Vector2 {
         return new Vector2(0, 0);
     }
 

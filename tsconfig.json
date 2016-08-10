@@ -6,7 +6,8 @@
         "outDir": "./build",
         "rootDir": "./src",
         "removeComments": true,
-        "pretty": true
+        "pretty": true,
+        "experimentalDecorators": true
     },
     "exclude": [
         "node_modules",

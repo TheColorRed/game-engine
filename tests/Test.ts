@@ -9,7 +9,7 @@ class Test extends MonoBehavior {
     }
 
     public update() {
-        let cam = this.gameObject.getComponent<Camera>();
+        let cam = this.gameObject.getComponent(Camera);
         Debug.log('update');
     }
 

@@ -120,8 +120,9 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     let id = target.getAttribute('data-id');
     let gameObject = GameObjectManager.getItemById(id);
     gameObject.components.forEach(comp => {
-        console.log(Object.getOwnPropertyNames(comp as Transform))
+        console.log(comp);
         for (var key in comp) {
+
             console.log(key);
         }
     });

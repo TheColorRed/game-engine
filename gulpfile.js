@@ -39,6 +39,7 @@ gulp.task('compile-editor', ['compile-engine'], function () {
 gulp.task('compile-engine', ['rm-build'], function () {
     return gulp.src([
         // Root of all objects
+        './src/Engine/Editor/decorators/serializable.ts',
         './src/Engine/core/Obj.ts',
         './src/Engine/core/Component.ts',
         './src/Engine/core/Behavior.ts',
@@ -51,15 +52,16 @@ gulp.task('compile-engine', ['rm-build'], function () {
         './src/Engine/util/color/Color.ts',
         './src/Engine/util/vector/Vector3.ts',
         './src/Engine/util/vector/Vector2.ts',
-        './src/Engine/physics/Physics.ts',
         './src/Engine/utils/Config.ts',
+        './src/Engine/physics/Physics.ts',
         './src/Engine/main.ts',
     ]).pipe(gulptsc({
         out: 'gameEngine.js',
         module: 'system',
         target: 'es6',
         removeComments: true,
-        declaration: true
+        declaration: true,
+        experimentalDecorators: true
     })).pipe(gulp.dest('build'));
 });
 

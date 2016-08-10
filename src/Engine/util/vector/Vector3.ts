@@ -10,7 +10,7 @@ class Vector3 {
         this.z = z;
     }
 
-    public static zero(): Vector3 {
+    public static get zero(): Vector3 {
         return new Vector3(0, 0, 0);
     }
 

@@ -1,4 +1,4 @@
-interface ComponentConstructor<T extends Component> {
+interface ComponentType<T extends Component> {
     new(): T;
 }
 

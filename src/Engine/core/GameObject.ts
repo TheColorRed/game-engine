@@ -7,7 +7,8 @@ class GameObject extends Obj {
     public constructor(name: string = 'GameObject') {
         super();
         this.name = name;
-        this._transform = this.addComponent(Transform) as Transform;
+        this._transform = this.addComponent(Transform);
+        console.log(Object(this._transform));
         ObjectManager.addItem(this);
     }
 
@@ -23,20 +24,19 @@ class GameObject extends Obj {
         return this.tag == tagName;
     }
 
-    public getComponents<T extends Component>(component: ComponentConstructor<T>): Component[] {
-        var comps: Component[] = [];
+    public getComponents<T extends Component>(type: ComponentType<T>): T[] {
+        var comps: T[] = [];
         this._components.forEach(comp => {
-            if (comp instanceof component){
-                comps.push(comp);
+            if (comp instanceof type){
+                comps.push(comp as T);
             }
         });
         return comps;
     }
 
-    public addComponent<T extends Component>(ctor: ComponentConstructor<T>, options?: { any }): Component {
+    public addComponent<T extends Component>(type: ComponentType<T>): T {
         let comp;
-        comp = new ctor();
-        comp.options = options;
+        comp = new type() as T;
         comp.name = comp.constructor.name;
         comp.setGameObject(this);
         comp.behavior = comp;
@@ -45,10 +45,10 @@ class GameObject extends Obj {
         return comp;
     }
 
-    public getComponent<T extends Component>(component: ComponentConstructor<T>): Component {
+    public getComponent<T extends Component>(type: ComponentType<T>): T {
         for (let i = 0; i < this._components.length; i++) {
-            if (this._components[i].constructor == component.constructor) {
-                return this._components[i];
+            if (this._components[i].constructor == type.constructor) {
+                return this._components[i] as T;
             }
         }
         return null;
