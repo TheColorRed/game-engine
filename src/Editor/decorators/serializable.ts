@@ -1,4 +1,4 @@
-/// <reference path="../../../../node_modules/reflect-metadata/Reflect.d.ts"/>
+/// <reference path="../../../node_modules/reflect-metadata/Reflect.d.ts"/>
 
 function serializable(...args): any {
     return Reflect.metadata('serializable', true);

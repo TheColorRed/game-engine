@@ -1,11 +1,35 @@
-class Vector2 extends Vector3 {
+class Vector2 {
+
+    public x: number = 0;
+    public y: number = 0;
 
     public constructor(x: number, y: number) {
-        super(x, y, 0);
+        this.x = x;
+        this.y = y;
     }
 
     public static get zero(): Vector2 {
         return new Vector2(0, 0);
+    }
+
+    public static get one(): Vector2 {
+        return new Vector2(1, 1);
+    }
+
+    public static get up(): Vector2 {
+        return new Vector2(0, 1);
+    }
+
+    public static get down(): Vector2 {
+        return new Vector2(0, -1);
+    }
+
+    public static get left(): Vector2 {
+        return new Vector2(-1, 0);
+    }
+
+    public static get right(): Vector2 {
+        return new Vector2(1, 0);
     }
 
 }

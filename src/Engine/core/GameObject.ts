@@ -8,7 +8,6 @@ class GameObject extends Obj {
         super();
         this.name = name;
         this._transform = this.addComponent(Transform);
-        console.log(Object(this._transform));
         ObjectManager.addItem(this);
     }
 

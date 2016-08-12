@@ -121,7 +121,6 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     let target = event.detail as HTMLElement;
     let id = target.getAttribute('data-id');
     let gameObject = GameObjectManager.getItemById(id);
-    // let editors: Editor[] = [];
     gameObject.components.forEach(comp => {
         inspector.innerHTML = '';
         let inspect = document.createElement('div') as HTMLDivElement;
@@ -129,19 +128,30 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
         let compTitle = document.createElement('div') as HTMLDivElement;
         compTitle.classList.add('component-title');
         compTitle.innerText = comp.name;
-        inspect.appendChild(compTitle);
-        for (let key in comp) {
-            if (isSerializable(comp, key)) {
-                let compItem = document.createElement('div') as HTMLDivElement;
-                compItem.innerHTML = `<span>${key}</span>
-                <div class="input-group">
-                    <div><span>X</span><span><input type="text" class="input"></span></div>
-                    <div><span>Y</span><span><input type="text" class="input"></span></div>
-                    <div><span>Z</span><span><input type="text" class="input"></span></div>
-                </div>`;
-                inspect.appendChild(compItem);
+
+        Globals.editors.forEach(editor => {
+            if (comp.constructor.name == editor.target.name) {
+                editor.setActiveGameObject(gameObject);
+                editor.setActiveComponent(comp);
+                editor.onUpdate();
             }
-        }
+        });
+
+        inspect.appendChild(compTitle);
+        // for (let key in comp) {
+        //     if (isSerializable(comp, key)) {
+        //         let compItem = document.createElement('div') as HTMLDivElement;
+        //         compItem.classList.add('component-property');
+
+        //         compItem.innerHTML = `<div class="component-name">${key}</div>
+        //         <div class="input-group">
+        //             <div><span>X</span><span><input type="text" class="input" value="${comp[key].x}"></span></div>
+        //             <div><span>Y</span><span><input type="text" class="input" value="${comp[key].y}"></span></div>
+        //             <div><span>Z</span><span><input type="text" class="input" value="${comp[key].z}"></span></div>
+        //         </div>`;
+        //         inspect.appendChild(compItem);
+        //     }
+        // }
 
         inspector.appendChild(inspect);
 

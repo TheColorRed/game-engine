@@ -1,17 +1,26 @@
 class Editor {
 
-    private _target: string;
+    public target: Component;
+    protected activeGameObject: GameObject;
+    protected activeComponent: Component;
 
-    public constructor(component: string){
-        this._target = component;
+    // public get target(): Function {
+    //     return this._target;
+    // }
+
+
+    public findField(key) {
+        return this.activeComponent[key] || null;
     }
 
-    public get target(): string {
-        return this._target;
+    public setActiveGameObject(gameObject: GameObject) {
+        this.activeGameObject = gameObject;
     }
 
-    public onUpdate() {
-        console.log('here');
+    public setActiveComponent(component: Component) {
+        this.activeComponent = component;
     }
+
+    public onUpdate() { }
 
 }

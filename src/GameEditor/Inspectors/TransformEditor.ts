@@ -1,4 +1,0 @@
-// class TransformEditor extends Editor {
-
-
-// }
