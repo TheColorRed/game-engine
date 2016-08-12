@@ -4,13 +4,14 @@
     user-select: none;
     outline: none;
 }
-body {
+body, html {
     padding: 0;
     margin: 0;
     background-color: #292929;
     user-select: none;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
+    color: #a3a3a3;
 }
 canvas {
     position: absolute;
@@ -27,7 +28,6 @@ canvas {
 }
 
 #hierarchy > .game-object {
-    color: #a3a3a3;
     padding: 3px;
     padding-left: 10px;
     cursor: pointer;
@@ -72,4 +72,34 @@ canvas {
     top: 0;
     width: 15%;
     height: 100vh;
+}
+
+#inspector .component {
+    border-bottom: solid 1px #292929;
+}
+
+#inspector .component:last-child {
+    border-bottom: none;
+}
+
+#inspector .component .input-group {
+    display: table-row;
+}
+/*#inspector .component .input-group div {
+    display: table-row;
+}*/
+
+#inspector .component .input-group div {
+    display: table-cell;
+}
+#inspector .component .input-group div span:last-child {
+    width: 50%;
+}
+#inspector .component .input-group div .input {
+    width: 100%;
+}
+
+#inspector .component-title {
+    font-size: 1.1rem;
+    font-weight: bold;
 }

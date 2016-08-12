@@ -124,13 +124,26 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     // let editors: Editor[] = [];
     gameObject.components.forEach(comp => {
         inspector.innerHTML = '';
-        for (var key in comp) {
-            if(isSerializable(comp, key)){
-                let inspect = document.createElement('div') as HTMLDivElement;
-                inspect.innerText = key;
-                inspector.appendChild(inspect);
+        let inspect = document.createElement('div') as HTMLDivElement;
+        inspect.classList.add('component');
+        let compTitle = document.createElement('div') as HTMLDivElement;
+        compTitle.classList.add('component-title');
+        compTitle.innerText = comp.name;
+        inspect.appendChild(compTitle);
+        for (let key in comp) {
+            if (isSerializable(comp, key)) {
+                let compItem = document.createElement('div') as HTMLDivElement;
+                compItem.innerHTML = `<span>${key}</span>
+                <div class="input-group">
+                    <div><span>X</span><span><input type="text" class="input"></span></div>
+                    <div><span>Y</span><span><input type="text" class="input"></span></div>
+                    <div><span>Z</span><span><input type="text" class="input"></span></div>
+                </div>`;
+                inspect.appendChild(compItem);
             }
         }
+
+        inspector.appendChild(inspect);
 
         // var name = comp.constructor.name;
 
