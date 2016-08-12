@@ -1,16 +1,8 @@
-function decorate(handle, ...args) {
-    return handle(...arguments, []);
+/// <reference path="../../../../node_modules/reflect-metadata/Reflect.d.ts"/>
+
+function serializable(...args): any {
+    return Reflect.metadata('serializable', true);
 }
-
-function handleDescriptor(target, key, descriptor) {
-    console.log(target);
-    console.log(key);
-    console.log(descriptor);
-    descriptor.writable = true;
-    return descriptor;
-}
-
-
-function serializable(...args) {
-    return decorate(handleDescriptor, args);
+function isSerializable(target: any, propertyKey: string) {
+    return Reflect.getMetadata('serializable', target, propertyKey);
 }

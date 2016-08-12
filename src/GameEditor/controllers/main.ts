@@ -1,4 +1,5 @@
 /// <reference path="../../../build/gameEngine.d.ts"/>
+/// <reference path="../../../build/gameEditor.d.ts"/>
 const { remote, ipcRenderer } = require('electron');
 
 // Menus
@@ -7,6 +8,7 @@ import { hierarchyMenu } from './../resources/menus/hierarchyMenu';
 
 import { Config } from './../utils/Config';
 import { GameObjectManager } from './../utils/GameObjectManager';
+
 // Utilities
 import fs = require('fs');
 
@@ -119,11 +121,31 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     let target = event.detail as HTMLElement;
     let id = target.getAttribute('data-id');
     let gameObject = GameObjectManager.getItemById(id);
+    // let editors: Editor[] = [];
     gameObject.components.forEach(comp => {
-        console.log(comp);
+        inspector.innerHTML = '';
         for (var key in comp) {
-
-            console.log(key);
+            if(isSerializable(comp, key)){
+                let inspect = document.createElement('div') as HTMLDivElement;
+                inspect.innerText = key;
+                inspector.appendChild(inspect);
+            }
         }
+
+        // var name = comp.constructor.name;
+
+        // var editorComponent = new Editor(name);
+        // editors.push(editorComponent);
+
+        // if (comp.constructor == ) {
+        //     console.log('here')
+        // }
+
+        // var descr = Object.getOwnPropertyDescriptor(comp, 'position');
+        // console.log(Object.getOwnPropertyDescriptor(Object.getPrototypeOf(comp), 'position'));
+        // for (var key in comp) {
+
+        // }
     });
+
 });

@@ -4,17 +4,32 @@ var gulptsc = require('gulp-tsc');
 var asar    = require('asar');
 var ncp     = require('ncp').ncp;
 var rmdir   = require('rimraf');
+var fs      = require('fs');
 
-// var Transform = require('transform');
-// var browserify = require('browserify');
-// var tsify = require('tsify');
-// var source = require('vinyl-source-stream');
-// var buffer = require('vinyl-buffer');
+var gameEngine = {
+    out: 'gameEngine.js',
+    module: 'system',
+    target: 'es6',
+    removeComments: true,
+    declaration: true,
+    experimentalDecorators: true
+};
 
-gulp.task('build', ['compile-editor'], function () {
+var gameEditor = {
+    out: 'gameEditor.js',
+    module: 'system',
+    target: 'es6',
+    removeComments: true,
+    declaration: true,
+    experimentalDecorators: true
+};
+
+gulp.task('build', ['compile-game-editor'], function () {
     return new Promise(resolve => {
-        ncp('./src/Editor/resources', './build/Editor/resources', function (error) {
+        ncp('./src/GameEditor/resources', './build/Editor/resources', function (error) {
             if (error) { throw error; }
+            fs.createReadStream('./node_modules/reflect-metadata/Reflect.js').pipe(fs.createWriteStream('./build/reflect.js'));
+            // fs.createReadStream('./node_modules/systemjs/dist/system.js').pipe(fs.createWriteStream('./build/system.js'));
             asar.createPackage('./build', './bin/GameEditor.asar', function (error) {
                 if (error) { throw error; }
                 console.log('done.');
@@ -24,16 +39,23 @@ gulp.task('build', ['compile-editor'], function () {
     });
 });
 
-gulp.task('compile-editor', ['compile-engine'], function () {
+gulp.task('compile-game-editor', ['compile-editor'], function () {
      return gulp.src([
         // Editor files
-        './src/Editor/**/*.ts',
+        './src/GameEditor/**/*.ts',
      ]).pipe(gulptsc({
         module: 'commonjs',
         target: 'es6',
         removeComments: true,
         allowUnreachableCode: true
     })).pipe(gulp.dest('build/Editor/'));
+});
+
+gulp.task('compile-editor', ['compile-engine'], function () {
+    return gulp.src([
+        './src/Editor/core/Editor.ts',
+        // './src/Editor/main.ts',
+    ]).pipe(gulptsc(gameEditor)).pipe(gulp.dest('build'));
 });
 
 gulp.task('compile-engine', ['rm-build'], function () {
@@ -55,14 +77,7 @@ gulp.task('compile-engine', ['rm-build'], function () {
         './src/Engine/utils/Config.ts',
         './src/Engine/physics/Physics.ts',
         './src/Engine/main.ts',
-    ]).pipe(gulptsc({
-        out: 'gameEngine.js',
-        module: 'system',
-        target: 'es6',
-        removeComments: true,
-        declaration: true,
-        experimentalDecorators: true
-    })).pipe(gulp.dest('build'));
+    ]).pipe(gulptsc(gameEngine)).pipe(gulp.dest('build'));
 });
 
 gulp.task('rm-build', function () {
