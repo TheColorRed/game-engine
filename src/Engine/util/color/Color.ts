@@ -5,9 +5,13 @@ class Color {
     public b: number;
     public a: number;
 
+    public h: number;
+    public s: number;
+    public l: number;
+
     public constructor(r: any, g: number, b: number, a: number = 255) {
         if (typeof r == 'string') {
-            var c: Color = Color.rgb(r);
+            let c: Color = Color.fromHex(r);
             this.r = c.r;
             this.g = c.g;
             this.b = c.b;
@@ -18,35 +22,60 @@ class Color {
             this.b = b;
             this.a = a;
         }
+        this.hsl();
     }
 
-    public hex(): string {
-        var hexr = this.r.toString(16);
-        var hexg = this.g.toString(16);
-        var hexb = this.b.toString(16);
-        var r = hexr.length == 1 ? "0" + hexr : hexr;
-        var g = hexg.length == 1 ? "0" + hexg : hexg;
-        var b = hexb.length == 1 ? "0" + hexb : hexb;
-        return r + g + b;
+    public get hex(): string {
+        let hexr = this.r.toString(16);
+        let hexg = this.g.toString(16);
+        let hexb = this.b.toString(16);
+        let r = hexr.length == 1 ? '0' + hexr : hexr;
+        let g = hexg.length == 1 ? '0' + hexg : hexg;
+        let b = hexb.length == 1 ? '0' + hexb : hexb;
+        return r.toString() + g.toString() + b.toString();
     }
 
-    public static rgb(hex: string): Color {
-        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    protected hsl() {
+        let r = this.r / 255, g = this.g / 255, b = this.b / 255;
+        let max = Math.max(this.r, this.g, this.b), min = Math.min(this.r, this.g, this.b);
+        let h, s, l = (max + min) / 2;
+
+        if(max == min){
+            h = s = 0; // achromatic
+        }else{
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max){
+                case this.r: h = (this.g - this.b) / d + (this.g < this.b ? 6 : 0); break;
+                case this.g: h = (this.b - this.r) / d + 2; break;
+                case this.b: h = (this.r - this.g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        this.h = h;
+        this.s = s;
+        this.l = l;
+    }
+
+    public static fromHex(hexCode: string): Color {
+        // console.log(hexCode)
+        let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hexCode = hexCode.replace(shorthandRegex, function(m, r, g, b) {
             return r + r + g + g + b + b;
         });
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return new Color(
+        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexCode);
+        return result ? new Color(
             parseInt(result[1], 16),
             parseInt(result[2], 16),
             parseInt(result[3], 16)
-        );
+        ) : null;
     }
 
     public get invert(): Color {
-        var r: number = Math.abs(this.r - 255);
-        var g: number = Math.abs(this.g - 255);
-        var b: number = Math.abs(this.b - 255);
+        let r: number = Math.abs(this.r - 255);
+        let g: number = Math.abs(this.g - 255);
+        let b: number = Math.abs(this.b - 255);
         return new Color(r, g, b);
     }
 

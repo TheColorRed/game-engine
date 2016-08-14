@@ -1,26 +1,32 @@
 class Editor {
 
-    public target: Component;
+    public targetName: string;
+    protected target: Component;
     protected activeGameObject: GameObject;
-    protected activeComponent: Component;
+    public static inspector: HTMLElement;
+    public properties: string[] = [];
 
-    // public get target(): Function {
-    //     return this._target;
-    // }
+    protected serializedObject: SerializedObject;
 
-
-    public findField(key) {
-        return this.activeComponent[key] || null;
+    public constructor(object: Component) {
+        this.target = object;
+        this.targetName = object.name;
     }
 
     public setActiveGameObject(gameObject: GameObject) {
         this.activeGameObject = gameObject;
     }
 
-    public setActiveComponent(component: Component) {
-        this.activeComponent = component;
+    public setSerializedObject(component: Component) {
+        this.serializedObject = new SerializedObject(component);
     }
 
-    public onUpdate() { }
+    public onEnable() {
+        // Override this in an editor
+    }
+
+    public onUpdate() {
+        // Override this in an editor
+    }
 
 }

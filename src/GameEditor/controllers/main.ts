@@ -102,6 +102,12 @@ window.addEventListener('onCreateGameobject', (event) => {
     GameObjectManager.addItem(createGameObject);
 });
 
+window.addEventListener('onCreateCamera', (event) => {
+    var createCamera = new GameObject('Camera');
+    createCamera.addComponent(Camera);
+    GameObjectManager.addItem(createCamera);
+});
+
 window.addEventListener('onObjectManagerChanged', (event) => {
     hierarchy.innerHTML = '';
     var depth = 0;
@@ -121,54 +127,40 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     let target = event.detail as HTMLElement;
     let id = target.getAttribute('data-id');
     let gameObject = GameObjectManager.getItemById(id);
+    inspector.innerHTML = '';
     gameObject.components.forEach(comp => {
-        inspector.innerHTML = '';
         let inspect = document.createElement('div') as HTMLDivElement;
         inspect.classList.add('component');
         let compTitle = document.createElement('div') as HTMLDivElement;
         compTitle.classList.add('component-title');
         compTitle.innerText = comp.name;
 
-        Globals.editors.forEach(editor => {
-            if (comp.constructor.name == editor.target.name) {
-                editor.setActiveGameObject(gameObject);
-                editor.setActiveComponent(comp);
-                editor.onUpdate();
-            }
-        });
-
         inspect.appendChild(compTitle);
-        // for (let key in comp) {
-        //     if (isSerializable(comp, key)) {
-        //         let compItem = document.createElement('div') as HTMLDivElement;
-        //         compItem.classList.add('component-property');
-
-        //         compItem.innerHTML = `<div class="component-name">${key}</div>
-        //         <div class="input-group">
-        //             <div><span>X</span><span><input type="text" class="input" value="${comp[key].x}"></span></div>
-        //             <div><span>Y</span><span><input type="text" class="input" value="${comp[key].y}"></span></div>
-        //             <div><span>Z</span><span><input type="text" class="input" value="${comp[key].z}"></span></div>
-        //         </div>`;
-        //         inspect.appendChild(compItem);
-        //     }
-        // }
-
+        for(let i = 0; i < Globals.editors.length; i++){
+            let editor: Editor = Globals.editors[i];
+            if (comp.constructor.name == editor.targetName) {
+                editor.setActiveGameObject(gameObject);
+                editor.setSerializedObject(comp);
+                Editor.inspector = inspect;
+                editor.onEnable();
+                editor.onUpdate();
+                break;
+            }
+        };
         inspector.appendChild(inspect);
-
-        // var name = comp.constructor.name;
-
-        // var editorComponent = new Editor(name);
-        // editors.push(editorComponent);
-
-        // if (comp.constructor == ) {
-        //     console.log('here')
-        // }
-
-        // var descr = Object.getOwnPropertyDescriptor(comp, 'position');
-        // console.log(Object.getOwnPropertyDescriptor(Object.getPrototypeOf(comp), 'position'));
-        // for (var key in comp) {
-
-        // }
     });
 
+    let colors: NodeListOf<HTMLDivElement> = document.querySelectorAll(`div.color-property`) as NodeListOf<HTMLDivElement>;
+    for(var i = 0; i < colors.length; i++){
+        colors[i].addEventListener('click', (event) => {
+            let target = event.currentTarget as HTMLDivElement;
+            let id = target.getAttribute('data-id');
+            let color = target.getAttribute('data-color');
+            window.dispatchEvent(new CustomEvent('onColorPicker', {detail: {id: id, color: color}}));
+        });
+    }
+});
+
+window.addEventListener('onColorPicker', (event: CustomEvent) => {
+    ipcRenderer.send('color-picker', event.detail);
 });

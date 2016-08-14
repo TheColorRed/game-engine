@@ -4,17 +4,20 @@
 @customEditor(Transform)
 class TransformEditor extends Editor {
 
+    protected position: SerializedProperty;
+    protected rotation: SerializedProperty;
+    protected scale: SerializedProperty;
+
+    public onEnable() {
+        this.position = this.serializedObject.findProperty('position');
+        this.rotation = this.serializedObject.findProperty('rotation');
+        this.scale = this.serializedObject.findProperty('scale');
+    }
+
     public onUpdate() {
-        let position: string = this.findField('position');
-        let rotation: string = this.findField('rotation');
-        let scale: string = this.findField('scale');
-        let comp = {};
-        // compItem.innerHTML = `<div class="component-name">${key}</div>
-        //     <div class="input-group">
-        //         <div><span>X</span><span><input type="text" class="input" value="${comp[key].x}"></span></div>
-        //         <div><span>Y</span><span><input type="text" class="input" value="${comp[key].y}"></span></div>
-        //         <div><span>Z</span><span><input type="text" class="input" value="${comp[key].z}"></span></div>
-        //     </div>`;
+        EditorGui.propertyField(this.position);
+        EditorGui.propertyField(this.rotation);
+        EditorGui.propertyField(this.scale);
     }
 
 }

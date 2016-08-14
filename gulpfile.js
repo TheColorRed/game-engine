@@ -63,6 +63,10 @@ gulp.task('compile-game-editor', ['compile-editor'], function () {
 gulp.task('compile-editor', ['compile-engine'], function () {
     return gulp.src([
         './src/Editor/core/Editor.ts',
+        './src/Editor/core/SerializedObject.ts',
+        './src/Editor/core/SerializedProperty.ts',
+        './src/Editor/core/EditorGui.ts',
+        './src/Editor/utils/EditorRandom.ts',
         './src/Editor/decorators/*.ts',
         './src/Editor/inspectors/*.ts',
     ]).pipe(gulptsc(gameEditor)).pipe(gulp.dest('build'));
@@ -76,8 +80,8 @@ gulp.task('compile-engine', ['compile-utils'], function () {
         './src/Engine/core/Behavior.ts',
         './src/Engine/core/MonoBehavior.ts',
         './src/Engine/core/GameObject.ts',
-        './src/Engine/core/Transform.ts',
         './src/Engine/core/ObjectManager.ts',
+        './src/Engine/components/*.ts',
         './src/Engine/util/Time.ts',
         './src/Engine/util/Debug.ts',
         './src/Engine/util/color/Color.ts',

@@ -5,6 +5,7 @@ import {
 } from 'electron';
 
 let mainWindow: Electron.BrowserWindow;
+let colorWindow: Electron.BrowserWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
@@ -35,4 +36,23 @@ ipcMain.on('open-project', (event) => {
 
 ipcMain.on('dev-tools', () => {
     mainWindow.webContents.openDevTools();
+});
+
+ipcMain.on('color-picker', (event, details) => {
+    colorWindow = new BrowserWindow({
+        width: 500,
+        height: 400,
+        show: false,
+        darkTheme: true,
+        hasShadow: true,
+        parent: mainWindow,
+        resizable: false
+    });
+    colorWindow.loadURL(`file://${__dirname}/resources/views/color.html`);
+    colorWindow.setMenu(null);
+    colorWindow.on('ready-to-show', () => {
+        colorWindow.show();
+        colorWindow.webContents.send('init', details);
+        colorWindow.webContents.openDevTools();
+    });
 });

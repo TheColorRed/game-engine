@@ -24,6 +24,9 @@ export const hierarchyMenu = Menu.buildFromTemplate([
         label: 'Particle System'
     },
     {
-        label: 'Camera'
+        label: 'Camera',
+        click: () => {
+            window.dispatchEvent(new CustomEvent('onCreateCamera'));
+        }
     }
 ]);
