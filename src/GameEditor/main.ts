@@ -43,7 +43,7 @@ ipcMain.on('dev-tools', () => {
 ipcMain.on('color-picker', (event, details) => {
     colorWindow = new BrowserWindow({
         width: 500,
-        height: 400,
+        height: 365,
         show: false,
         darkTheme: true,
         hasShadow: true,

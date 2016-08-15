@@ -6,7 +6,6 @@
         "rootDir": "./src",
         "removeComments": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "watch": true,
         "allowJs": true
     },

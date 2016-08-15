@@ -7,22 +7,11 @@ class Color {
 
     public h: number;
     public s: number;
-    public l: number;
+    public v: number;
 
     public constructor(r: any, g: number, b: number, a: number = 255) {
-        if (typeof r == 'string') {
-            let c: Color = Color.fromHex(r);
-            this.r = c.r;
-            this.g = c.g;
-            this.b = c.b;
-            this.a = c.a;
-        } else {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-            this.a = a;
-        }
-        this.hsl();
+        this.r = r,this.g = g,this.b = b,this.a = a;
+        this.hsv();
     }
 
     public get hex(): string {
@@ -35,31 +24,64 @@ class Color {
         return r.toString() + g.toString() + b.toString();
     }
 
-    protected hsl() {
-        let r = this.r / 255, g = this.g / 255, b = this.b / 255;
-        let max = Math.max(this.r, this.g, this.b), min = Math.min(this.r, this.g, this.b);
-        let h, s, l = (max + min) / 2;
+    protected hsv () {
+        var rr, gg, bb,
+            r = this.r / 255,
+            g = this.g / 255,
+            b = this.b / 255,
+            h, s,
+            v = Math.max(r, g, b),
+            diff = v - Math.min(r, g, b),
+            diffc = function(c){
+                return (v - c) / 6 / diff + 1 / 2;
+            };
 
-        if(max == min){
-            h = s = 0; // achromatic
-        }else{
-            let d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch(max){
-                case this.r: h = (this.g - this.b) / d + (this.g < this.b ? 6 : 0); break;
-                case this.g: h = (this.b - this.r) / d + 2; break;
-                case this.b: h = (this.r - this.g) / d + 4; break;
+        if (diff == 0) {
+            h = s = 0;
+        } else {
+            s = diff / v;
+            rr = diffc(r);
+            gg = diffc(g);
+            bb = diffc(b);
+
+            if (r === v) {
+                h = bb - gg;
+            }else if (g === v) {
+                h = (1 / 3) + rr - bb;
+            }else if (b === v) {
+                h = (2 / 3) + gg - rr;
             }
-            h /= 6;
+            if (h < 0) {
+                h += 1;
+            }else if (h > 1) {
+                h -= 1;
+            }
         }
+        this.h = Math.round(h * 360);
+        this.s = Math.round(s * 100);
+        this.v = Math.round(v * 100);
+    }
 
-        this.h = h;
-        this.s = s;
-        this.l = l;
+    public static fromHsv(h: number, s: number, v: number): Color {
+        h /= 360, s /= 100, v /= 100;
+        var r, g, b, i, f, p, q, t;
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+        return new Color(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255));
     }
 
     public static fromHex(hexCode: string): Color {
-        // console.log(hexCode)
         let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
         hexCode = hexCode.replace(shorthandRegex, function(m, r, g, b) {
             return r + r + g + g + b + b;

@@ -1,0 +1,53 @@
+section {
+    display: table-cell;
+    padding: 10px;
+    vertical-align: top;
+}
+
+canvas {
+    position: unset;
+}
+
+canvas#hues {
+    cursor: ns-resize;
+}
+
+.main-row {
+    display: table;
+    width: 100%;
+}
+
+#color-picker {
+    width: 345px;
+}
+
+.display-color {
+    width: 70px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.display-color-fields {
+    width: 70px;
+    line-height: 24px;
+    display: table-row;
+}
+
+.old-color{
+    cursor: pointer;
+}
+
+.color-box {
+    width: 100%;
+    height: 35px;
+}
+
+.display-color-fields label, .display-color-fields input {
+    display: table-cell;
+}
+.display-color-fields input {
+    width: 50px;
+}
+.display-color-fields label {
+    width: 20px;
+    cursor: ew-resize;
+}

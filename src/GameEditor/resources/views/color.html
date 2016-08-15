@@ -1,14 +1,56 @@
 <html>
 <head>
-    <title>Game Engine</title>
+    <title>Color Picker</title>
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/color.css">
 </head>
 <body>
-    <section id="color-picker">
-        <canvas id="colors" width="300" height="300"></canvas>
-        <canvas id="hues" width="20" height="300"></canvas>
-    </section>
+    <div class="main-row">
+        <section id="color-picker">
+            <canvas id="colors" width="300" height="300"></canvas>
+            <canvas id="hues" width="20" height="300"></canvas>
+        </section>
+        <section>
+            <div class="display-color">
+                <div>New</div>
+                <div class="new-color color-box"></div>
+                <div class="old-color color-box"></div>
+                <div>Current</div>
+            </div>
+            <div class="display-color-fields">
+                <label for="h">h</label>
+                <input maxlength="3" id="h" value="0" type="number" min="0" max="259">
+            </div>
+            <div class="display-color-fields">
+                <label for="s">s</label>
+                <input maxlength="3" id="s" value="0" type="number" min="0" max="100">
+            </div>
+            <div class="display-color-fields">
+                <label for="v">v</label>
+                <input maxlength="3" id="v" value="0" type="number" min="0" max="100">
+            </div>
+            <div class="display-color-fields">
+                <label for="r">r</label>
+                <input maxlength="3" id="r" value="0" type="number" min="0" max="255">
+            </div>
+            <div class="display-color-fields">
+                <label for="g">g</label>
+                <input maxlength="3" id="g" value="0" type="number" min="0" max="255">
+            </div>
+            <div class="display-color-fields">
+                <label for="b">b</label>
+                <input maxlength="3" id="b" value="0" type="number" min="0" max="255">
+            </div>
+            <div class="display-color-fields">
+                <label for="a">a</label>
+                <input maxlength="3" id="a" value="0" type="number" min="0" max="255">
+            </div>
+            <div class="display-color-fields">
+                <label for="hex">#</label>
+                <input id="hex" maxlength="6" value="0" type="text">
+            </div>
+        </section>
+    </div>
     <script>require('../../controllers/color');</script>
     <script src="../../../gameEngine.js"></script>
     <script src="../../../gameEditor.js"></script>
