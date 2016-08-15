@@ -5,7 +5,10 @@
         "outDir": "./build",
         "rootDir": "./src",
         "removeComments": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "watch": true,
+        "allowJs": true
     },
     "exclude": [
         "node_modules",

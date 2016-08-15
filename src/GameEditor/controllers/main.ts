@@ -1,5 +1,3 @@
-/// <reference path="../../../build/gameEngine.d.ts"/>
-/// <reference path="../../../build/gameEditor.d.ts"/>
 const { remote, ipcRenderer } = require('electron');
 
 // Menus
