@@ -15,7 +15,8 @@ app.on('ready', () => {
         height: 600,
         show: false,
         darkTheme: true,
-        hasShadow: true
+        hasShadow: true,
+        title: 'SpyNgin'
     });
     mainWindow.maximize();
     mainWindow.loadURL(`file://${__dirname}/resources/views/main.html`);

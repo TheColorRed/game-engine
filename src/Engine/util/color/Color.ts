@@ -24,38 +24,23 @@ class Color {
         return r.toString() + g.toString() + b.toString();
     }
 
-    protected hsv () {
-        var rr, gg, bb,
-            r = this.r / 255,
-            g = this.g / 255,
-            b = this.b / 255,
-            h, s,
-            v = Math.max(r, g, b),
-            diff = v - Math.min(r, g, b),
-            diffc = function(c){
-                return (v - c) / 6 / diff + 1 / 2;
-            };
+    protected hsv() {
+        let r = this.r / 255, g = this.g / 255, b = this.b / 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, v = max;
 
-        if (diff == 0) {
-            h = s = 0;
+        let d = max - min;
+        s = max == 0 ? 0 : d / max;
+
+        if (max == min) {
+            h = 0; // achromatic
         } else {
-            s = diff / v;
-            rr = diffc(r);
-            gg = diffc(g);
-            bb = diffc(b);
-
-            if (r === v) {
-                h = bb - gg;
-            }else if (g === v) {
-                h = (1 / 3) + rr - bb;
-            }else if (b === v) {
-                h = (2 / 3) + gg - rr;
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
             }
-            if (h < 0) {
-                h += 1;
-            }else if (h > 1) {
-                h -= 1;
-            }
+            h /= 6;
         }
         this.h = Math.round(h * 360);
         this.s = Math.round(s * 100);

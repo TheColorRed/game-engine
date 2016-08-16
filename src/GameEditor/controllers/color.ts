@@ -4,13 +4,16 @@ let selectedColor: Color;
 
 let oldColorDiv: HTMLDivElement = document.querySelector('div.old-color') as HTMLDivElement;
 let newColorDiv: HTMLDivElement = document.querySelector('div.new-color') as HTMLDivElement;
+// Get the HSV inputs
 let h: HTMLInputElement = document.querySelector('input#h') as HTMLInputElement;
 let s: HTMLInputElement = document.querySelector('input#s') as HTMLInputElement;
 let v: HTMLInputElement = document.querySelector('input#v') as HTMLInputElement;
+// Get the RGBA inputs
 let r: HTMLInputElement = document.querySelector('input#r') as HTMLInputElement;
 let g: HTMLInputElement = document.querySelector('input#g') as HTMLInputElement;
 let b: HTMLInputElement = document.querySelector('input#b') as HTMLInputElement;
 let a: HTMLInputElement = document.querySelector('input#a') as HTMLInputElement;
+// Get the Hex input
 let hex: HTMLInputElement = document.querySelector('input#hex') as HTMLInputElement;
 
 let colorCanvas: HTMLCanvasElement = document.querySelector('canvas#colors') as HTMLCanvasElement;
@@ -76,10 +79,6 @@ function updateValues(){
     drawHues();
 }
 
-// window.addEventListener('update-color-picker', (event: CustomEvent) => {
-//     drawPicker();
-// });
-
 function drawPicker() {
     let colorContext = colorCanvas.getContext('2d');
 
@@ -88,7 +87,7 @@ function drawPicker() {
     // Color Canvas
     let hGrad = colorContext.createLinearGradient(0, 0, 300, 0);
     hGrad.addColorStop(0, '#ffffff');
-    hGrad.addColorStop(1, '#' + hsv.hex);
+    hGrad.addColorStop(1, '#'+ hsv.hex);
 
     let vGrad = colorContext.createLinearGradient(0, 0, 0, 300);
     vGrad.addColorStop(0, 'rgba(0,0,0,0)');
@@ -133,17 +132,16 @@ function drawHues(){
     // Hues Canvas
     let hueGrad = hueContext.createLinearGradient(0, 0, 0, 300);
     hueGrad.addColorStop(0.00, '#ff0000');
-    hueGrad.addColorStop(0.15, '#ff00ff');
-    hueGrad.addColorStop(0.30, '#0000ff');
+    hueGrad.addColorStop(0.20, '#ff00ff');
+    hueGrad.addColorStop(0.35, '#0000ff');
     hueGrad.addColorStop(0.50, '#00ffff');
-    hueGrad.addColorStop(0.70, '#00ff00');
-    hueGrad.addColorStop(0.85, '#ffff00');
+    hueGrad.addColorStop(0.65, '#00ff00');
+    hueGrad.addColorStop(0.80, '#ffff00');
     hueGrad.addColorStop(1.00, '#ff0000');
 
     hueContext.fillStyle = hueGrad;
     hueContext.fillRect(0, 0, 20, 300);
 
-    let hsv = Color.fromHsv(selectedColor.h, 100, 100);
     let rect = hueCanvas.getBoundingClientRect();
 
     hueContext.beginPath();

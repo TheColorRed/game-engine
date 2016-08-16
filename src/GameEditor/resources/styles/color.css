@@ -1,3 +1,8 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+   opacity: 1;
+}
+
 section {
     display: table-cell;
     padding: 10px;
