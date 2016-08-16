@@ -1,6 +1,13 @@
 const { remote, ipcRenderer } = require('electron');
 
 let selectedColor: Color;
+let gameObjectId: string;
+let componentId: string;
+let propertyId: string;
+
+let inputOkay: HTMLInputElement = document.querySelector('input#okay') as HTMLInputElement;
+let inputCancel: HTMLInputElement = document.querySelector('input#cancel') as HTMLInputElement;
+let inputReset: HTMLInputElement = document.querySelector('input#reset') as HTMLInputElement;
 
 let oldColorDiv: HTMLDivElement = document.querySelector('div.old-color') as HTMLDivElement;
 let newColorDiv: HTMLDivElement = document.querySelector('div.new-color') as HTMLDivElement;
@@ -12,7 +19,7 @@ let v: HTMLInputElement = document.querySelector('input#v') as HTMLInputElement;
 let r: HTMLInputElement = document.querySelector('input#r') as HTMLInputElement;
 let g: HTMLInputElement = document.querySelector('input#g') as HTMLInputElement;
 let b: HTMLInputElement = document.querySelector('input#b') as HTMLInputElement;
-let a: HTMLInputElement = document.querySelector('input#a') as HTMLInputElement;
+// let a: HTMLInputElement = document.querySelector('input#a') as HTMLInputElement;
 // Get the Hex input
 let hex: HTMLInputElement = document.querySelector('input#hex') as HTMLInputElement;
 
@@ -28,23 +35,46 @@ v.addEventListener('input', onUpdateHSVValues);
 r.addEventListener('input', onUpdateRGBValues);
 g.addEventListener('input', onUpdateRGBValues);
 b.addEventListener('input', onUpdateRGBValues);
-a.addEventListener('input', onUpdateRGBValues);
+// a.addEventListener('input', onUpdateRGBValues);
 
 // If the hex color changes
 hex.addEventListener('input', onUpdateHexValues);
 
-oldColorDiv.addEventListener('click', (event) => {
-    selectedColor = Color.fromHex(oldColorDiv.getAttribute('data-hex'));
-    updateValues();
-});
 
-ipcRenderer.on('init', (event, colorDetails: { id: string, color: string }) => {
+inputOkay.addEventListener('click', okay);
+inputCancel.addEventListener('click', cancel);
+inputReset.addEventListener('click', reset);
+
+oldColorDiv.addEventListener('click', reset);
+
+ipcRenderer.on('init', (event, colorDetails: { gameObjectId: string, componentId: string, propertyId: string, color: string }) => {
     selectedColor = Color.fromHex(`#${colorDetails.color}`);
+    gameObjectId = colorDetails.gameObjectId;
+    componentId = colorDetails.componentId;
+    propertyId = colorDetails.propertyId;
     oldColorDiv.setAttribute('data-hex', `#${colorDetails.color}`);
     oldColorDiv.style.backgroundColor = '#' + selectedColor.hex;
     newColorDiv.style.backgroundColor = '#' + selectedColor.hex;
     updateValues();
 });
+
+function okay(){
+    ipcRenderer.send('color-okay', {
+        gameObjectId: gameObjectId,
+        componentId: componentId,
+        propertyId: propertyId,
+        color: selectedColor.hex
+    });
+}
+
+function cancel(){
+    ipcRenderer.send('color-cancel');
+}
+
+function reset(){
+    selectedColor = Color.fromHex(oldColorDiv.getAttribute('data-hex'));
+    updateValues();
+}
 
 function onUpdateHSVValues(){
     selectedColor = Color.fromHsv(parseInt(h.value), parseInt(s.value), parseInt(v.value));
@@ -52,7 +82,7 @@ function onUpdateHSVValues(){
 }
 
 function onUpdateRGBValues(){
-    selectedColor = new Color(parseInt(r.value), parseInt(g.value), parseInt(b.value), parseInt(a.value));
+    selectedColor = new Color(parseInt(r.value), parseInt(g.value), parseInt(b.value)/*, parseInt(a.value)*/);
     updateValues();
 }
 
@@ -71,7 +101,7 @@ function updateValues(){
     r.value = selectedColor.r.toString();
     g.value = selectedColor.g.toString();
     b.value = selectedColor.b.toString();
-    a.value = selectedColor.a.toString();
+    // a.value = selectedColor.a.toString();
 
     hex.value = selectedColor.hex.toString();
     newColorDiv.style.backgroundColor = '#' + selectedColor.hex;

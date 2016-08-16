@@ -43,7 +43,7 @@ ipcMain.on('dev-tools', () => {
 
 ipcMain.on('color-picker', (event, details) => {
     colorWindow = new BrowserWindow({
-        width: 500,
+        width: 550,
         height: 365,
         show: false,
         darkTheme: true,
@@ -58,4 +58,13 @@ ipcMain.on('color-picker', (event, details) => {
         colorWindow.webContents.send('init', details);
         colorWindow.webContents.openDevTools();
     });
+});
+
+ipcMain.on('color-cancel', (event) => {
+    colorWindow.close();
+});
+
+ipcMain.on('color-okay', (event, contents) => {
+    mainWindow.webContents.send('color-selected', contents);
+    colorWindow.close();
 });

@@ -32,7 +32,6 @@ canvas#hues {
     margin-bottom: 10px;
 }
 .display-color-fields {
-    width: 70px;
     line-height: 24px;
     display: table-row;
 }
@@ -49,10 +48,9 @@ canvas#hues {
 .display-color-fields label, .display-color-fields input {
     display: table-cell;
 }
-.display-color-fields input {
-    width: 50px;
-}
+
 .display-color-fields label {
     width: 20px;
     cursor: ew-resize;
+    padding-bottom: 15px;
 }

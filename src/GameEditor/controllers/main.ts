@@ -95,6 +95,20 @@ ipcRenderer.on('open-project', (event, folders: string[]) => {
     }
 });
 
+ipcRenderer.on('color-selected', (event, content) => {
+    let gameObject = GameObjectManager.getItemById(content.gameObjectId);
+    console.log(content)
+    gameObject.components.forEach(comp => {
+        console.log(comp.instanceId, content.id)
+        if(comp.instanceId == content.id){
+            console.log('component found')
+            var c: Camera = comp as Camera;
+            c.backgroundColor = Color.fromHex(`#${content.color}`);
+        }
+    });
+    drawGui(gameObject);
+});
+
 window.addEventListener('onCreateGameobject', (event) => {
     var createGameObject = new GameObject;
     GameObjectManager.addItem(createGameObject);
@@ -106,14 +120,18 @@ window.addEventListener('onCreateCamera', (event) => {
     GameObjectManager.addItem(createCamera);
 });
 
-window.addEventListener('onObjectManagerChanged', (event) => {
+window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
     hierarchy.innerHTML = '';
     var depth = 0;
+    var obj = event.detail;
     GameObjectManager.items.forEach(gameObject => {
         let div = document.createElement('div');
         div.innerText = gameObject.name;
         div.classList.add('game-object');
         div.setAttribute('data-id', gameObject.instanceId);
+        if(obj instanceof GameObject && obj.instanceId == gameObject.instanceId){
+            selectGameObject(div);
+        }
         div.addEventListener('click', (event) => {
             window.dispatchEvent(new CustomEvent('onGameObjectSelected', { detail: div }));
         });
@@ -122,42 +140,57 @@ window.addEventListener('onObjectManagerChanged', (event) => {
 });
 
 window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
-    let target = event.detail as HTMLElement;
+    selectGameObject(event.detail);
+});
+
+function selectGameObject(target: HTMLElement){
+    // let target = event.detail as HTMLElement;
     let id = target.getAttribute('data-id');
+    inspector.setAttribute('data-gameobject-id', id);
     let gameObject = GameObjectManager.getItemById(id);
+    drawGui(gameObject);
+};
+
+function drawGui(gameObject: GameObject){
     inspector.innerHTML = '';
     gameObject.components.forEach(comp => {
-        let inspect = document.createElement('div') as HTMLDivElement;
-        inspect.classList.add('component');
+        let inspectorComp = document.createElement('div') as HTMLDivElement;
+        inspectorComp.classList.add('component');
+        inspectorComp.setAttribute('data-component-id', comp.instanceId);
         let compTitle = document.createElement('div') as HTMLDivElement;
         compTitle.classList.add('component-title');
         compTitle.innerText = comp.name;
 
-        inspect.appendChild(compTitle);
+        inspectorComp.appendChild(compTitle);
         for(let i = 0; i < Globals.editors.length; i++){
             let editor: Editor = Globals.editors[i];
             if (comp.constructor.name == editor.targetName) {
                 editor.setActiveGameObject(gameObject);
                 editor.setSerializedObject(comp);
-                Editor.inspector = inspect;
+                Editor.inspector = inspectorComp;
                 editor.onEnable();
                 editor.onUpdate();
                 break;
             }
         };
-        inspector.appendChild(inspect);
+        inspector.appendChild(inspectorComp);
     });
 
     let colors: NodeListOf<HTMLDivElement> = document.querySelectorAll(`div.color-property`) as NodeListOf<HTMLDivElement>;
     for(var i = 0; i < colors.length; i++){
         colors[i].addEventListener('click', (event) => {
-            let target = event.currentTarget as HTMLDivElement;
-            let id = target.getAttribute('data-id');
+            let target = event.currentTarget as HTMLElement;
+            let propertyId = target.getAttribute('data-id');
             let color = target.getAttribute('data-color');
-            window.dispatchEvent(new CustomEvent('onColorPicker', {detail: {id: id, color: color}}));
+            window.dispatchEvent(new CustomEvent('onColorPicker', {detail: {
+                gameObjectId: inspector.getAttribute('data-gameobject-id'),
+                componentId: target.closest('.component').getAttribute('data-component-id'),
+                propertyId: propertyId,
+                color: color
+            }}));
         });
     }
-});
+}
 
 window.addEventListener('onColorPicker', (event: CustomEvent) => {
     ipcRenderer.send('color-picker', event.detail);
