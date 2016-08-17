@@ -53,10 +53,13 @@ ipcMain.on('color-picker', (event, details) => {
     });
     colorWindow.loadURL(`file://${__dirname}/resources/views/color.html`);
     colorWindow.setMenu(null);
+    // Close the window when it is no longer focused
+    colorWindow.on('blur', () => { colorWindow.close(); });
+    // Display window when render is complete
     colorWindow.on('ready-to-show', () => {
         colorWindow.show();
         colorWindow.webContents.send('init', details);
-        colorWindow.webContents.openDevTools();
+        // colorWindow.webContents.openDevTools();
     });
 });
 

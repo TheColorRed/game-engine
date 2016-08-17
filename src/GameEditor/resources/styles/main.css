@@ -36,6 +36,11 @@ canvas {
     background-color: #484848;
 }
 
+#hierarchy > .game-object.selected {
+    background-color: #4f86f7;
+    color: #ffffff;
+}
+
 #scene-view {
     position: absolute;
     width: 100%;

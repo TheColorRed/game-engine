@@ -40,7 +40,7 @@ class EditorGui {
     }
 
     public static colorField(field: SerializedProperty): void {
-        this.draw(`<div class="property-name">${field.displayName}</div><div data-id="${EditorRandom.generateId()}" data-color="${field.colorValue.hex}" class="color-property" style="background-color: #${field.colorValue.hex};"></div>`);
+        this.draw(`<div class="property-name">${field.displayName}</div><div data-name="${field.name}" data-color="${field.colorValue.hex}" class="color-property" style="background-color: #${field.colorValue.hex};"></div>`);
     }
 
 }

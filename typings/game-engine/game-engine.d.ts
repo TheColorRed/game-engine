@@ -1,3 +1,3 @@
-declare interface GameObject {
-
+interface Element {
+    closest(selector: string): Element;
 }

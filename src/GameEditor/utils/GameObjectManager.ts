@@ -16,7 +16,7 @@ export class GameObjectManager {
         this.objectManagerChanged(item);
     }
 
-    public static removeItems(item: GameObject) {
+    public static removeItem(item: GameObject) {
         var idx: number = this._items.indexOf(item);
         if (idx > -1) {
             this._items.splice(idx, 1);

@@ -1,8 +1,10 @@
+/// <reference path="../../../typings/game-engine/game-engine.d.ts"/>
 const { remote, ipcRenderer } = require('electron');
 
 // Menus
 require(__dirname + '/../resources/menus/mainMenu');
 import { hierarchyMenu } from './../resources/menus/hierarchyMenu';
+import { gameObjectMenu } from './../resources/menus/gameObjectMenu';
 
 import { Config } from './../utils/Config';
 import { GameObjectManager } from './../utils/GameObjectManager';
@@ -16,6 +18,8 @@ let hierarchy: HTMLDivElement, editor: HTMLDivElement, inspector: HTMLDivElement
 let sceneView: HTMLDivElement, gameView: HTMLDivElement;
 // Canvases
 let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement, game: HTMLCanvasElement;
+
+let rightClicked: HTMLElement;
 
 // Initialize the window
 window.addEventListener('load', () => {
@@ -95,23 +99,35 @@ ipcRenderer.on('open-project', (event, folders: string[]) => {
     }
 });
 
-ipcRenderer.on('color-selected', (event, content) => {
+ipcRenderer.on('color-selected', (event, content: {gameObjectId: string, componentId: string, propertyName: string, hexColor: string}) => {
     let gameObject = GameObjectManager.getItemById(content.gameObjectId);
-    console.log(content)
     gameObject.components.forEach(comp => {
-        console.log(comp.instanceId, content.id)
-        if(comp.instanceId == content.id){
-            console.log('component found')
-            var c: Camera = comp as Camera;
-            c.backgroundColor = Color.fromHex(`#${content.color}`);
+        if(comp.instanceId == content.componentId){
+            let properties: string[] = Object.getOwnPropertyNames(comp);
+            properties.forEach(property => {
+                if(property == content.propertyName){
+                    comp[property] = Color.fromHex(content.hexColor);
+                }
+            });
         }
     });
     drawGui(gameObject);
 });
 
-window.addEventListener('onCreateGameobject', (event) => {
-    var createGameObject = new GameObject;
+window.addEventListener('onCreateGameobject', (event: CustomEvent) => {
+    let createGameObject = new GameObject;
+    let isChild: boolean = (event.detail || {}).child || false;
+    if(isChild){
+        let parent = GameObjectManager.getItemById(rightClicked.getAttribute('data-id'));
+        createGameObject.transform.parent = parent.transform;
+    }
     GameObjectManager.addItem(createGameObject);
+});
+
+window.addEventListener('onDeleteGameObject', (event) => {
+    let gameObject = GameObjectManager.getItemById(rightClicked.getAttribute('data-id'));
+    GameObjectManager.removeItem(gameObject);
+    clearInspector();
 });
 
 window.addEventListener('onCreateCamera', (event) => {
@@ -130,14 +146,41 @@ window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
         div.classList.add('game-object');
         div.setAttribute('data-id', gameObject.instanceId);
         if(obj instanceof GameObject && obj.instanceId == gameObject.instanceId){
+            setSelected(div);
             selectGameObject(div);
         }
         div.addEventListener('click', (event) => {
+            setSelected(div);
             window.dispatchEvent(new CustomEvent('onGameObjectSelected', { detail: div }));
+        });
+        // Right clicked
+        div.addEventListener('mousedown', (event) => {
+            if (event.button == 2) {
+                rightClicked = div;
+                event.stopPropagation();
+                gameObjectMenu.popup();
+            }
         });
         hierarchy.appendChild(div);
     });
 });
+
+function setSelected(target: HTMLElement){
+    let objects: NodeListOf<HTMLElement> = hierarchy.querySelectorAll('.game-object') as NodeListOf<HTMLElement>;
+    for(let i = 0; i < objects.length; i++){
+        let obj = objects[i];
+        obj.classList.remove('selected');
+    }
+    target.classList.add('selected');
+}
+
+function clearInspector(){
+    let objects: NodeListOf<HTMLElement> = hierarchy.querySelectorAll('.game-object.selected') as NodeListOf<HTMLElement>;
+    if(objects.length == 0){
+        inspector.innerHTML = '';
+        inspector.setAttribute('data-gameobject-id', '');
+    }
+}
 
 window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     selectGameObject(event.detail);
@@ -180,14 +223,14 @@ function drawGui(gameObject: GameObject){
     for(var i = 0; i < colors.length; i++){
         colors[i].addEventListener('click', (event) => {
             let target = event.currentTarget as HTMLElement;
-            let propertyId = target.getAttribute('data-id');
+            let propertyName = target.getAttribute('data-name');
             let color = target.getAttribute('data-color');
-            window.dispatchEvent(new CustomEvent('onColorPicker', {detail: {
+            window.dispatchEvent(new CustomEvent('onColorPicker', { detail: {
                 gameObjectId: inspector.getAttribute('data-gameobject-id'),
                 componentId: target.closest('.component').getAttribute('data-component-id'),
-                propertyId: propertyId,
+                propertyName: propertyName,
                 color: color
-            }}));
+            } }));
         });
     }
 }

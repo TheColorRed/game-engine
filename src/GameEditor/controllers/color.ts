@@ -3,7 +3,7 @@ const { remote, ipcRenderer } = require('electron');
 let selectedColor: Color;
 let gameObjectId: string;
 let componentId: string;
-let propertyId: string;
+let propertyName: string;
 
 let inputOkay: HTMLInputElement = document.querySelector('input#okay') as HTMLInputElement;
 let inputCancel: HTMLInputElement = document.querySelector('input#cancel') as HTMLInputElement;
@@ -47,11 +47,11 @@ inputReset.addEventListener('click', reset);
 
 oldColorDiv.addEventListener('click', reset);
 
-ipcRenderer.on('init', (event, colorDetails: { gameObjectId: string, componentId: string, propertyId: string, color: string }) => {
-    selectedColor = Color.fromHex(`#${colorDetails.color}`);
+ipcRenderer.on('init', (event, colorDetails: { gameObjectId: string, componentId: string, propertyName: string, color: string }) => {
+    selectedColor = Color.fromHex(colorDetails.color);
     gameObjectId = colorDetails.gameObjectId;
     componentId = colorDetails.componentId;
-    propertyId = colorDetails.propertyId;
+    propertyName = colorDetails.propertyName;
     oldColorDiv.setAttribute('data-hex', `#${colorDetails.color}`);
     oldColorDiv.style.backgroundColor = '#' + selectedColor.hex;
     newColorDiv.style.backgroundColor = '#' + selectedColor.hex;
@@ -62,8 +62,8 @@ function okay(){
     ipcRenderer.send('color-okay', {
         gameObjectId: gameObjectId,
         componentId: componentId,
-        propertyId: propertyId,
-        color: selectedColor.hex
+        propertyName: propertyName,
+        hexColor: selectedColor.hex
     });
 }
 
