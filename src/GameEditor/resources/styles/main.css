@@ -91,6 +91,7 @@ canvas {
 #inspector .component .component-property {
     display: table;
     margin-bottom: 5px;
+    cursor: default;
 }
 
 #inspector .component .component-property .input-group {
@@ -125,6 +126,7 @@ canvas {
     font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 10px;
+    cursor: default;
 }
 
 #inspector .property-name {
