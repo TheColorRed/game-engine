@@ -1,24 +1,40 @@
 <html>
+
 <head>
     <title>SpyNgin</title>
+    <link rel="stylesheet" href="../styles/master.css">
     <link rel="stylesheet" href="../styles/main.css">
 </head>
+
 <body>
-    <section id="hierarchy" class="panel"></section>
-    <section id="editor" class="panel">
-        <div id="scene-view">
-            <canvas id="background"></canvas>
-            <canvas id="scene"></canvas>
-        </div>
-        <!--<div id="game-view">
+    <div class="container-fluid">
+        <section id="toolbar" class="panel">
+            <div class="row">
+                <div class="col-4 text-left"></div>
+                <div class="col-4 text-center">
+                    <a href="">Play</a>
+                    <a href="">Pause</a>
+                </div>
+                <div class="col-4 text-right"></div>
+            </div>
+        </section>
+        <section id="hierarchy" class="panel"></section>
+        <section id="editor" class="panel">
+            <div id="scene-view">
+                <canvas id="background"></canvas>
+                <canvas id="scene"></canvas>
+            </div>
+            <!--<div id="game-view">
             <canvas id="game"></canvas>
         </div>-->
-    </section>
-    <section id="inspector" class="panel" data-gameobject-id=""></section>
-    <section id="project"></section>
+        </section>
+        <section id="inspector" class="panel" data-gameobject-id=""></section>
+        <section id="project"></section>
+    </div>
     <script src="../../controllers/main.js"></script>
     <script src="../../../reflect.js"></script>
     <script src="../../../gameEngine.js"></script>
     <script src="../../../gameEditor.js"></script>
 </body>
+
 </html>

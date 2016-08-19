@@ -1,6 +1,6 @@
 class Camera extends Component {
 
-    public backgroundColor: Color = Color.blueberry;
+    public backgroundColor: Color = new Color(49, 77, 121);
     public fieldOfView: number = 60;
 
 }

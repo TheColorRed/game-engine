@@ -3,7 +3,7 @@
 /// <reference path="../../build/gameEditor.d.ts"/>
 
 import {
-    BrowserWindow, app, ipcMain, dialog
+    BrowserWindow, app, ipcMain, dialog, globalShortcut
 } from 'electron';
 
 let mainWindow: Electron.BrowserWindow;
@@ -24,6 +24,16 @@ app.on('ready', () => {
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
     });
+});
+
+app.on('browser-window-focus', () => {
+    globalShortcut.register('F2', () => {
+        mainWindow.webContents.send('rename-selected');
+    });
+});
+
+app.on('browser-window-blur', () => {
+    globalShortcut.unregisterAll();
 });
 
 ipcMain.on('open-project', (event) => {

@@ -16,7 +16,7 @@ let sceneView: HTMLDivElement, gameView: HTMLDivElement;
 // Canvases
 let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement, game: HTMLCanvasElement;
 
-let rightClicked: HTMLElement;
+let rightClicked: HTMLElement, selected: HTMLElement;
 
 // Initialize the window
 window.addEventListener('load', () => {
@@ -35,6 +35,37 @@ window.addEventListener('load', () => {
     sceneBg = document.querySelector('canvas#background') as HTMLCanvasElement;
     scene = document.querySelector('canvas#scene') as HTMLCanvasElement;
     game = document.querySelector('canvas#game') as HTMLCanvasElement;
+});
+
+ipcRenderer.on('rename-selected', () => {
+    let text = selected.innerText
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    let input: HTMLInputElement = document.createElement('input');
+    input.setAttribute('type', 'text');
+    input.setAttribute('data-original', text);
+    input.setAttribute('data-id', selected.getAttribute('data-id'));
+    input.setAttribute('value', text);
+    input.addEventListener('keyup', (event) => {
+        if(event.keyCode == 13){
+            let id: string = input.getAttribute('data-id');
+            let gameObject: GameObject = GameObjectManager.getItemById(id);
+            gameObject.name = input.value;
+            selected.innerText = input.value;
+        }
+        if(event.keyCode == 27){
+            selected.innerText = input.getAttribute('data-original');
+        }
+    });
+    input.addEventListener('blur', (event) => {
+        selected.innerText = input.getAttribute('data-original');
+    });
+    selected.innerHTML = '';
+    selected.appendChild(input);
+    input.select();
 });
 
 // Resize the scene when the window size changes or loads
@@ -58,6 +89,20 @@ function sceneBgRewrite() {
         context.fillRect(0, 0, sceneBg.width, sceneBg.height);
     }
 }
+
+window.addEventListener('onUpdateScene', function(event: CustomEvent){
+    let drawOrder: GameObject[] = [];
+    let context = scene.getContext('2d');
+    context.clearRect(0, 0, scene.width, scene.height);
+    GameObjectManager.items.forEach(gameObject => {
+        gameObject.components.forEach(comp => {
+            if (comp instanceof Camera) {
+                context.fillStyle = `#${comp.backgroundColor.hex}`;
+                context.fillRect(0, 0, scene.width, scene.height);
+            }
+        });
+    });
+});
 
 function showDirContents(path: string): Promise<{ dirs: string[], files: string[] }> {
     return new Promise(resolve => {
@@ -109,6 +154,7 @@ ipcRenderer.on('color-selected', (event, content: {gameObjectId: string, compone
         }
     });
     drawGui(gameObject);
+    updateScene();
 });
 
 window.addEventListener('onCreateGameobject', (event: CustomEvent) => {
@@ -125,6 +171,7 @@ window.addEventListener('onDeleteGameObject', (event) => {
     let gameObject = GameObjectManager.getItemById(rightClicked.getAttribute('data-id'));
     GameObjectManager.removeItem(gameObject);
     clearInspector();
+    updateScene();
 });
 
 window.addEventListener('onCreateCamera', (event) => {
@@ -160,6 +207,7 @@ window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
         });
         hierarchy.appendChild(div);
     });
+    updateScene();
 });
 
 function setSelected(target: HTMLElement){
@@ -169,6 +217,7 @@ function setSelected(target: HTMLElement){
         obj.classList.remove('selected');
     }
     target.classList.add('selected');
+    selected = target;
 }
 
 function clearInspector(){
@@ -190,6 +239,10 @@ function selectGameObject(target: HTMLElement){
     let gameObject = GameObjectManager.getItemById(id);
     drawGui(gameObject);
 };
+
+function updateScene(){
+    window.dispatchEvent(new CustomEvent('onUpdateScene'));
+}
 
 function drawGui(gameObject: GameObject){
     inspector.innerHTML = '';

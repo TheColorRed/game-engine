@@ -4,6 +4,12 @@ class EditorGui {
         let compItem = document.createElement('div') as HTMLDivElement;
         compItem.classList.add('component-property');
         compItem.innerHTML = drawString;
+        let inputs = compItem.querySelectorAll('input') as NodeListOf<HTMLInputElement>;
+        for (let i = 0; i < inputs.length; i++){
+            inputs[i].addEventListener('click', (event) => {
+                inputs[i].select();
+            });
+        }
         Editor.inspector.appendChild(compItem);
     }
 

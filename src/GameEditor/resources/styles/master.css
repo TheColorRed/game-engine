@@ -24,7 +24,7 @@ input[type=text], input[type=number]{
     background: #2f2f2f;
     box-shadow: inset 0 0 2px 1px #1b1b1b;
     border: 0;
-    padding: 5px;
+    padding: 2px;
     color: #fff;
     letter-spacing: 1px;
     border-bottom: solid 1px #7f7f7f;
@@ -33,6 +33,12 @@ input[type=text], input[type=number]{
 
 .text-right {
     text-align: right;
+}
+.text-left {
+    text-align: left;
+}
+.text-center {
+    text-align: center;
 }
 
 .box-container {
@@ -63,7 +69,12 @@ input[type=text], input[type=number]{
 .bottom-margin {
     margin-bottom: 5px;
 }
-
+.container-fluid {
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: auto;
+    margin-left: auto;
+}
 .row{
     margin-left: -5px;
     margin-right: -5px;

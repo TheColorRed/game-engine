@@ -206,7 +206,7 @@ class Color {
     public static get mediumBlue(): Color { return new Color(0, 0, 205); }
     public static get darkBlue(): Color { return new Color(0, 0, 139); }
     public static get navy(): Color { return new Color(0, 0, 128); }
-    public static get midnighBlue(): Color { return new Color(25, 25, 112); }
+    public static get midnightBlue(): Color { return new Color(25, 25, 112); }
     public static get blueberry(): Color { return new Color(79, 134, 247); }
 
     // Browns

@@ -19,12 +19,22 @@ canvas {
 .panel {
     background-color: #383838;
 }
+
+#toolbar {
+    position: absolute;
+    top: 0;
+    height: 50px;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+}
+
 #hierarchy {
     width: 15%;
     height: 100vh;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 50px;
 }
 
 #hierarchy > .game-object {
@@ -57,7 +67,7 @@ canvas {
 
 #editor {
     position: absolute;
-    top: 0;
+    top: 50px;
     bottom: 30%;
     left: 15%;
     right: 25%;
@@ -74,7 +84,7 @@ canvas {
 #inspector {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 50px;
     width: 25%;
     height: 100vh;
 }
@@ -113,13 +123,6 @@ canvas {
 }
 #inspector .component .input-group div:last-child span:last-child {
     padding-right: 0;
-}
-#inspector .component .input-group div .input {
-    width: 100%;
-    font-size: 1rem;
-    padding: 1px;
-    border: none;
-    margin: 0;
 }
 
 #inspector .component-title {
