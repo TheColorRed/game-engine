@@ -1,4 +1,4 @@
-export class GameObjectManager {
+class GameObjectManager {
 
     protected static _items: GameObject[] = [];
 

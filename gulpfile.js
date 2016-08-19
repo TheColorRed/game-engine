@@ -66,6 +66,7 @@ gulp.task('compile-editor', ['compile-engine'], function () {
         './src/Editor/core/SerializedObject.ts',
         './src/Editor/core/SerializedProperty.ts',
         './src/Editor/core/EditorGui.ts',
+        './src/Editor/core/GameObjectManager.ts',
         './src/Editor/utils/EditorRandom.ts',
         './src/Editor/decorators/*.ts',
         './src/Editor/inspectors/*.ts',

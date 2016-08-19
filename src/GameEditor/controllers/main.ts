@@ -2,12 +2,9 @@
 const { remote, ipcRenderer } = require('electron');
 
 // Menus
-require(__dirname + '/../resources/menus/mainMenu');
-import { hierarchyMenu } from './../resources/menus/hierarchyMenu';
-import { gameObjectMenu } from './../resources/menus/gameObjectMenu';
-
-import { Config } from './../utils/Config';
-import { GameObjectManager } from './../utils/GameObjectManager';
+require(__dirname + '/../menus/mainMenu');
+const hierarchyMenu = require(__dirname + '/../menus/hierarchyMenu');
+const gameObjectMenu = require(__dirname + '/../menus/gameObjectMenu');
 
 // Utilities
 import fs = require('fs');
@@ -26,7 +23,7 @@ window.addEventListener('load', () => {
     hierarchy = document.querySelector('section#hierarchy') as HTMLDivElement;
     hierarchy.addEventListener('mousedown', (event) => {
         if (event.button == 2) {
-            hierarchyMenu.popup();
+            hierarchyMenu.menu.popup();
         }
     });
     editor = document.querySelector('section#editor') as HTMLDivElement;
@@ -52,7 +49,7 @@ function sceneBgRewrite() {
     scene.height = sceneView.clientHeight;
 
     let transImage = new Image();
-    transImage.src = __dirname + '/../resources/images/transparent.png';
+    transImage.src = __dirname + '/../images/transparent.png';
 
     transImage.onload = () => {
         let context: CanvasRenderingContext2D = sceneBg.getContext('2d');
@@ -158,7 +155,7 @@ window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
             if (event.button == 2) {
                 rightClicked = div;
                 event.stopPropagation();
-                gameObjectMenu.popup();
+                gameObjectMenu.menu.popup();
             }
         });
         hierarchy.appendChild(div);

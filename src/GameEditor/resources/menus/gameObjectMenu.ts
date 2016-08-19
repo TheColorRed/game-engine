@@ -1,7 +1,7 @@
 import { remote } from 'electron';
 let Menu = remote.Menu;
 
-export const gameObjectMenu = Menu.buildFromTemplate([
+export const menu = Menu.buildFromTemplate([
     {
         label: 'Create Empty Child',
         click: () => {
