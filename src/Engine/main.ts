@@ -1,4 +1,4 @@
-class GameEngineMain {
+class SpyNginMain {
 
     private lastLoopTime = this.getNanoSeconds;
     private targetFps = 120;
@@ -6,9 +6,19 @@ class GameEngineMain {
     private lastFpsTime = 0;
 
     private startTime = 0;
+    private _isPlaying: boolean = false;
 
     public startGame() {
+        this._isPlaying = true;
         this.tick();
+    }
+
+    public stopGame() {
+        this._isPlaying = false;
+    }
+
+    public get isPlaying(): boolean {
+        return this._isPlaying;
     }
 
     private get getNanoSeconds(): number {
@@ -17,6 +27,7 @@ class GameEngineMain {
     }
 
     protected tick(): void {
+        console.log('tick')
         let d = new Date().getTime();
         Time.setFrameTime((d - this.startTime) / 1000);
         var nanoSeconds = this.getNanoSeconds;
@@ -40,7 +51,9 @@ class GameEngineMain {
         this.lastCheck();
 
         var next = (this.lastLoopTime - nanoSeconds + this.optimalTime) / 1000000;
-        setTimeout(this.tick.bind(this), next);
+        if(this.isPlaying){
+            setTimeout(this.tick.bind(this), next);
+        }
     }
 
     protected awake(): void {
@@ -95,5 +108,3 @@ class GameEngineMain {
     }
 
 }
-
-new GameEngineMain().startGame();

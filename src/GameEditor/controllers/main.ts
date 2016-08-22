@@ -1,4 +1,3 @@
-/// <reference path="../../../typings/game-engine/game-engine.d.ts"/>
 const { remote, ipcRenderer } = require('electron');
 
 // Menus
@@ -14,9 +13,13 @@ let hierarchy: HTMLDivElement, editor: HTMLDivElement, inspector: HTMLDivElement
 // Div views
 let sceneView: HTMLDivElement, gameView: HTMLDivElement;
 // Canvases
-let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement, game: HTMLCanvasElement;
+let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement;
+
+// Toolbar buttons
+let play: HTMLAnchorElement, pause: HTMLAnchorElement;
 
 let rightClicked: HTMLElement, selected: HTMLElement;
+let game: SpyNginMain = null;
 
 // Initialize the window
 window.addEventListener('load', () => {
@@ -34,7 +37,35 @@ window.addEventListener('load', () => {
 
     sceneBg = document.querySelector('canvas#background') as HTMLCanvasElement;
     scene = document.querySelector('canvas#scene') as HTMLCanvasElement;
-    game = document.querySelector('canvas#game') as HTMLCanvasElement;
+
+    play = document.querySelector('a#play') as HTMLAnchorElement;
+    pause = document.querySelector('a#pause') as HTMLAnchorElement;
+    play.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (game instanceof SpyNginMain) {
+            game.stopGame();
+            game = null;
+            play.classList.remove('active');
+            pause.classList.remove('active');
+        } else {
+            game = new SpyNginMain();
+            ObjectManager.setItems(GameObjectManager.items);
+            game.startGame();
+            play.classList.add('active');
+        }
+    });
+    pause.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (game instanceof SpyNginMain) {
+            if (game.isPlaying){
+                game.stopGame();
+                pause.classList.add('active');
+            } else {
+                game.startGame();
+                pause.classList.remove('active');
+            }
+        }
+    });
 });
 
 ipcRenderer.on('rename-selected', () => {
@@ -153,7 +184,7 @@ ipcRenderer.on('color-selected', (event, content: {gameObjectId: string, compone
             });
         }
     });
-    drawGui(gameObject);
+    drawInspector(gameObject);
     updateScene();
 });
 
@@ -237,14 +268,14 @@ function selectGameObject(target: HTMLElement){
     let id = target.getAttribute('data-id');
     inspector.setAttribute('data-gameobject-id', id);
     let gameObject = GameObjectManager.getItemById(id);
-    drawGui(gameObject);
+    drawInspector(gameObject);
 };
 
 function updateScene(){
     window.dispatchEvent(new CustomEvent('onUpdateScene'));
 }
 
-function drawGui(gameObject: GameObject){
+function drawInspector(gameObject: GameObject){
     inspector.innerHTML = '';
     gameObject.components.forEach(comp => {
         let inspectorComp = document.createElement('div') as HTMLDivElement;
@@ -267,6 +298,25 @@ function drawGui(gameObject: GameObject){
             }
         };
         inspector.appendChild(inspectorComp);
+    });
+
+    let addComponent = document.createElement('div') as HTMLDivElement;
+    addComponent.classList.add('component');
+    addComponent.innerHTML = `<div class="row">
+        <div class="col-8 col-offset-2">
+            <a href="" class="btn btn-block add-component">Add Component</a>
+        </div>
+    </div>`;
+
+    inspector.appendChild(addComponent);
+    let compButton = document.querySelector('a.add-component') as HTMLAnchorElement;
+    compButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        for(let i = 0; i < Globals.editors.length; i++){
+            let editor: Editor = Globals.editors[i];
+            let path = getMenuPath(editor);
+            console.log(path);
+        }
     });
 
     let colors: NodeListOf<HTMLDivElement> = document.querySelectorAll(`div.color-property`) as NodeListOf<HTMLDivElement>;

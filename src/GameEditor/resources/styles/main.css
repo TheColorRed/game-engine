@@ -29,9 +29,17 @@ canvas {
     background-color: transparent;
 }
 
+#toolbar .btn-group.execution > .btn {
+    padding: 8px 10px;
+}
+
+#toolbar .center-block {
+    padding: 5px;
+}
+
 #hierarchy {
     width: 15%;
-    height: 100vh;
+    bottom: 0;
     position: absolute;
     left: 0;
     top: 50px;
@@ -86,7 +94,7 @@ canvas {
     right: 0;
     top: 50px;
     width: 25%;
-    height: 100vh;
+    bottom: 0;
 }
 
 #inspector .component {
@@ -99,15 +107,16 @@ canvas {
 }
 
 #inspector .component .component-property {
-    display: table;
+    /*display: table;*/
     margin-bottom: 5px;
     cursor: default;
+    /*width: 100%;*/
 }
 
 #inspector .component .component-property .input-group {
-    display: table-cell;
+    /*display: table-cell;*/
     vertical-align: middle;
-    width: 75%;
+    /*width: 75%;*/
 }
 
 #inspector .component .input-group div {
@@ -133,12 +142,9 @@ canvas {
 }
 
 #inspector .property-name {
-    display: table-cell;
     vertical-align: middle;
-    min-width: 150px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    padding-right: 10px;
 }
 
 #inspector .color-property {

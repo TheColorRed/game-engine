@@ -1,6 +1,4 @@
 /// <reference path="../../typings/github-electron/github-electron.d.ts"/>
-/// <reference path="../../build/gameEngine.d.ts"/>
-/// <reference path="../../build/gameEditor.d.ts"/>
 
 import {
     BrowserWindow, app, ipcMain, dialog, globalShortcut

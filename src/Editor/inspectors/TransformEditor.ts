@@ -1,6 +1,3 @@
-/// <reference path="../../../build/gameEngine.d.ts"/>
-/// <reference path="../decorators/customEditor.ts"/>
-
 @customEditor(Transform)
 class TransformEditor extends Editor {
 

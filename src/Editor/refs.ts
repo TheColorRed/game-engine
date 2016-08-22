@@ -1,1 +1,1 @@
-/// <reference path="./core/Globals.ts"/>
+/// <reference path="../../build/gameEngine.d.ts"/>

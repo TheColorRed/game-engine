@@ -20,7 +20,7 @@ var gameEditor = {
     module: 'system',
     target: 'es6',
     removeComments: true,
-    declaration: true,
+    // declaration: true,
     experimentalDecorators: true
 };
 
@@ -38,7 +38,6 @@ gulp.task('build', ['compile-game-editor'], function () {
         ncp('./src/GameEditor/resources', './build/Editor/resources', function (error) {
             if (error) { throw error; }
             fs.createReadStream('./node_modules/reflect-metadata/Reflect.js').pipe(fs.createWriteStream('./build/reflect.js'));
-            // fs.createReadStream('./node_modules/systemjs/dist/system.js').pipe(fs.createWriteStream('./build/system.js'));
             asar.createPackage('./build', './bin/GameEditor.asar', function (error) {
                 if (error) { throw error; }
                 console.log('done.');
@@ -51,6 +50,7 @@ gulp.task('build', ['compile-game-editor'], function () {
 gulp.task('compile-game-editor', ['compile-editor'], function () {
      return gulp.src([
         // Editor files
+        './src/GameEditor/refs.ts',
         './src/GameEditor/**/*.ts',
      ]).pipe(gulptsc({
         module: 'commonjs',
@@ -62,18 +62,19 @@ gulp.task('compile-game-editor', ['compile-editor'], function () {
 
 gulp.task('compile-editor', ['compile-engine'], function () {
     return gulp.src([
-        './src/Editor/core/Editor.ts',
+        './src/Editor/refs.ts',
         './src/Editor/core/SerializedObject.ts',
         './src/Editor/core/SerializedProperty.ts',
         './src/Editor/core/EditorGui.ts',
         './src/Editor/core/GameObjectManager.ts',
+        './src/Editor/core/Editor.ts',
         './src/Editor/utils/EditorRandom.ts',
         './src/Editor/decorators/*.ts',
         './src/Editor/inspectors/*.ts',
     ]).pipe(gulptsc(gameEditor)).pipe(gulp.dest('build'));
 });
 
-gulp.task('compile-engine', ['compile-utils'], function () {
+gulp.task('compile-engine', ['rm-build'], function () {
     return gulp.src([
         // Root of all objects
         './src/Engine/core/Obj.ts',
@@ -92,13 +93,6 @@ gulp.task('compile-engine', ['compile-utils'], function () {
         './src/Engine/physics/Physics.ts',
         './src/Engine/main.ts',
     ]).pipe(gulptsc(gameEngine)).pipe(gulp.dest('build'));
-});
-
-gulp.task('compile-utils', ['rm-build'], function () {
-    return gulp.src([
-        './src/utils/Globals.ts',
-        './src/utils/decorators/*.ts',
-    ]).pipe(gulptsc(utils)).pipe(gulp.dest('build'));
 });
 
 gulp.task('rm-build', function () {

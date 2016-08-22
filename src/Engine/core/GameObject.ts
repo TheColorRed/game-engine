@@ -26,7 +26,7 @@ class GameObject extends Obj {
     public getComponents<T extends Component>(type: ComponentType<T>): T[] {
         var comps: T[] = [];
         this._components.forEach(comp => {
-            if (comp instanceof type){
+            if (comp instanceof type) {
                 comps.push(comp as T);
             }
         });
