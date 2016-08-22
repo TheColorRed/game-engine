@@ -20,7 +20,7 @@ var gameEditor = {
     module: 'system',
     target: 'es6',
     removeComments: true,
-    // declaration: true,
+    declaration: true,
     experimentalDecorators: true
 };
 
@@ -83,6 +83,7 @@ gulp.task('compile-engine', ['rm-build'], function () {
         './src/Engine/core/MonoBehavior.ts',
         './src/Engine/core/GameObject.ts',
         './src/Engine/core/ObjectManager.ts',
+        './src/Engine/decorators/*.ts',
         './src/Engine/components/*.ts',
         './src/Engine/util/Time.ts',
         './src/Engine/util/Debug.ts',

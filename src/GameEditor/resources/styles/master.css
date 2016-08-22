@@ -72,17 +72,18 @@ input[type=text], input[type=number]{
 }
 
 .btn-group > .btn {
-    border-width: 1px;
     display: inline-block;
     position: relative;
     float: left;
+    border-width: 0;
 }
 .btn-group > .btn:first-child {
-    border-radius: 10px 0 0 10px;
+    border-radius: 5px 0 0 5px;
+    border-right-width: 1px;
 }
 
 .btn-group > .btn:last-child {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 5px 5px 0;
 }
 
 .btn-block{

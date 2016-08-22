@@ -14,7 +14,7 @@ let hierarchy: HTMLDivElement, editor: HTMLDivElement, inspector: HTMLDivElement
 let sceneView: HTMLDivElement, gameView: HTMLDivElement;
 // Canvases
 let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement;
-
+document
 // Toolbar buttons
 let play: HTMLAnchorElement, pause: HTMLAnchorElement;
 
@@ -309,14 +309,25 @@ function drawInspector(gameObject: GameObject){
     </div>`;
 
     inspector.appendChild(addComponent);
+
     let compButton = document.querySelector('a.add-component') as HTMLAnchorElement;
     compButton.addEventListener('click', (event) => {
         event.preventDefault();
-        for(let i = 0; i < Globals.editors.length; i++){
+        for (let i = 0; i < Globals.editors.length; i++) {
             let editor: Editor = Globals.editors[i];
-            let path = getMenuPath(editor);
-            console.log(path);
+            let path = getMenuPath(editor).split('/');
+
         }
+        let componentList = document.createElement('div') as HTMLDivElement;
+        componentList.classList.add('component-list');
+        componentList.innerHTML = `<div class="row">
+            <div class="col-12">
+                <input type="text" class="component-search" placeholder="Search">
+            </div>
+        </div>`;
+        addComponent.appendChild(componentList);
+        let compSearch = addComponent.querySelector('#inspector .component-search') as HTMLInputElement;
+        compSearch.focus();
     });
 
     let colors: NodeListOf<HTMLDivElement> = document.querySelectorAll(`div.color-property`) as NodeListOf<HTMLDivElement>;
