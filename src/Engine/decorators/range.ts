@@ -1,12 +1,11 @@
 /// <reference path="../../../node_modules/reflect-metadata/Reflect.d.ts"/>
 
 function range(min: number, max: number): any {
-    Reflect.metadata('rangeMin', min);
-    return Reflect.metadata('rangeMax', max);
+    return (target, propertyKeys) => {
+        Reflect.defineMetadata('range', `${min},${max}`, target, propertyKeys);
+    }
 }
-function rangeMin(target: any, propertyKey: string) {
-    return Reflect.getMetadata('rangeMin', target, propertyKey);
-}
-function rangeMax(target: any, propertyKey: string) {
-    return Reflect.getMetadata('rangeMax', target, propertyKey);
+
+function getRange(target: any, propertyKey: string) {
+    return Reflect.getMetadata('range', target, propertyKey).split(',');
 }

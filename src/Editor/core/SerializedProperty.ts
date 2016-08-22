@@ -1,11 +1,21 @@
 class SerializedProperty {
 
     protected _name: string;
-    protected object;
+    protected _property;
+    protected _object: Component;
 
-    public constructor(name: string, object: any) {
+    public constructor(object: Component, name: string, property: any) {
         this._name = name;
-        this.object = object;
+        this._property = property;
+        this._object = object;
+    }
+
+    public get object(): any {
+        return this._object;
+    }
+
+    public get property(): any {
+        return this._property;
     }
 
     public get name(): string {
@@ -17,35 +27,38 @@ class SerializedProperty {
     }
 
     public get type(): string {
-        return this.object.constructor.name;
+        if (!isNaN(parseFloat(this._property)) && isFinite(this._property)) {
+            return 'number';
+        }
+        return this._property.constructor.name;
     }
 
     public get boolValue(): boolean {
-        return this.object as boolean;
+        return this._property as boolean;
     }
 
     public get stringValue(): string {
-        return this.object as string;
+        return this._property as string;
     }
 
     public get numberValue(): number {
-        return this.object as number;
+        return this._property as number;
     }
 
     public get colorValue(): Color {
-        return this.object as Color;
+        return this._property as Color;
     }
 
     public get vector3Value(): Vector3 {
-        return this.object as Vector3;
+        return this._property as Vector3;
     }
 
     public get vector2Value(): Vector2 {
-        return this.object as Vector2;
+        return this._property as Vector2;
     }
 
     public get value(): any {
-        return this.object;
+        return this._property;
     }
 
     private toTitleCase(str) {

@@ -14,7 +14,7 @@ let hierarchy: HTMLDivElement, editor: HTMLDivElement, inspector: HTMLDivElement
 let sceneView: HTMLDivElement, gameView: HTMLDivElement;
 // Canvases
 let sceneBg: HTMLCanvasElement, scene: HTMLCanvasElement;
-document
+
 // Toolbar buttons
 let play: HTMLAnchorElement, pause: HTMLAnchorElement;
 
@@ -57,7 +57,7 @@ window.addEventListener('load', () => {
     pause.addEventListener('click', (event) => {
         event.preventDefault();
         if (game instanceof SpyNginMain) {
-            if (game.isPlaying){
+            if (game.isPlaying) {
                 game.stopGame();
                 pause.classList.add('active');
             } else {
@@ -81,13 +81,13 @@ ipcRenderer.on('rename-selected', () => {
     input.setAttribute('data-id', selected.getAttribute('data-id'));
     input.setAttribute('value', text);
     input.addEventListener('keyup', (event) => {
-        if(event.keyCode == 13){
+        if (event.keyCode == 13) {
             let id: string = input.getAttribute('data-id');
             let gameObject: GameObject = GameObjectManager.getItemById(id);
             gameObject.name = input.value;
             selected.innerText = input.value;
         }
-        if(event.keyCode == 27){
+        if (event.keyCode == 27) {
             selected.innerText = input.getAttribute('data-original');
         }
     });
@@ -121,7 +121,7 @@ function sceneBgRewrite() {
     }
 }
 
-window.addEventListener('onUpdateScene', function(event: CustomEvent){
+window.addEventListener('onUpdateScene', function (event: CustomEvent) {
     let drawOrder: GameObject[] = [];
     let context = scene.getContext('2d');
     context.clearRect(0, 0, scene.width, scene.height);
@@ -172,13 +172,13 @@ ipcRenderer.on('open-project', (event, folders: string[]) => {
     }
 });
 
-ipcRenderer.on('color-selected', (event, content: {gameObjectId: string, componentId: string, propertyName: string, hexColor: string}) => {
+ipcRenderer.on('color-selected', (event, content: { gameObjectId: string, componentId: string, propertyName: string, hexColor: string }) => {
     let gameObject = GameObjectManager.getItemById(content.gameObjectId);
     gameObject.components.forEach(comp => {
-        if(comp.instanceId == content.componentId){
+        if (comp.instanceId == content.componentId) {
             let properties: string[] = Object.getOwnPropertyNames(comp);
             properties.forEach(property => {
-                if(property == content.propertyName){
+                if (property == content.propertyName) {
                     comp[property] = Color.fromHex(content.hexColor);
                 }
             });
@@ -191,7 +191,7 @@ ipcRenderer.on('color-selected', (event, content: {gameObjectId: string, compone
 window.addEventListener('onCreateGameobject', (event: CustomEvent) => {
     let createGameObject = new GameObject;
     let isChild: boolean = (event.detail || {}).child || false;
-    if(isChild){
+    if (isChild) {
         let parent = GameObjectManager.getItemById(rightClicked.getAttribute('data-id'));
         createGameObject.transform.parent = parent.transform;
     }
@@ -220,7 +220,7 @@ window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
         div.innerText = gameObject.name;
         div.classList.add('game-object');
         div.setAttribute('data-id', gameObject.instanceId);
-        if(obj instanceof GameObject && obj.instanceId == gameObject.instanceId){
+        if (obj instanceof GameObject && obj.instanceId == gameObject.instanceId) {
             setSelected(div);
             selectGameObject(div);
         }
@@ -241,9 +241,9 @@ window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
     updateScene();
 });
 
-function setSelected(target: HTMLElement){
+function setSelected(target: HTMLElement) {
     let objects: NodeListOf<HTMLElement> = hierarchy.querySelectorAll('.game-object') as NodeListOf<HTMLElement>;
-    for(let i = 0; i < objects.length; i++){
+    for (let i = 0; i < objects.length; i++) {
         let obj = objects[i];
         obj.classList.remove('selected');
     }
@@ -251,9 +251,9 @@ function setSelected(target: HTMLElement){
     selected = target;
 }
 
-function clearInspector(){
+function clearInspector() {
     let objects: NodeListOf<HTMLElement> = hierarchy.querySelectorAll('.game-object.selected') as NodeListOf<HTMLElement>;
-    if(objects.length == 0){
+    if (objects.length == 0) {
         inspector.innerHTML = '';
         inspector.setAttribute('data-gameobject-id', '');
     }
@@ -263,7 +263,7 @@ window.addEventListener('onGameObjectSelected', (event: CustomEvent) => {
     selectGameObject(event.detail);
 });
 
-function selectGameObject(target: HTMLElement){
+function selectGameObject(target: HTMLElement) {
     // let target = event.detail as HTMLElement;
     let id = target.getAttribute('data-id');
     inspector.setAttribute('data-gameobject-id', id);
@@ -271,11 +271,11 @@ function selectGameObject(target: HTMLElement){
     drawInspector(gameObject);
 };
 
-function updateScene(){
+function updateScene() {
     window.dispatchEvent(new CustomEvent('onUpdateScene'));
 }
 
-function drawInspector(gameObject: GameObject){
+function drawInspector(gameObject: GameObject) {
     inspector.innerHTML = '';
     gameObject.components.forEach(comp => {
         let inspectorComp = document.createElement('div') as HTMLDivElement;
@@ -286,12 +286,13 @@ function drawInspector(gameObject: GameObject){
         compTitle.innerText = comp.name;
 
         inspectorComp.appendChild(compTitle);
-        for(let i = 0; i < Globals.editors.length; i++){
+        Editor.inspector = inspectorComp;
+        Editor.activeGameObject = gameObject;
+        for (let i = 0; i < Globals.editors.length; i++) {
             let editor: Editor = Globals.editors[i];
             if (comp.constructor.name == editor.targetName) {
-                editor.setActiveGameObject(gameObject);
+                // console.log(comp);
                 editor.setSerializedObject(comp);
-                Editor.inspector = inspectorComp;
                 editor.onEnable();
                 editor.onUpdate();
                 break;
@@ -313,35 +314,69 @@ function drawInspector(gameObject: GameObject){
     let compButton = document.querySelector('a.add-component') as HTMLAnchorElement;
     compButton.addEventListener('click', (event) => {
         event.preventDefault();
+        let componentNames: string[] = [];
         for (let i = 0; i < Globals.editors.length; i++) {
             let editor: Editor = Globals.editors[i];
-            let path = getMenuPath(editor).split('/');
-
+            let path = getMenuPath(editor);
+            if (path == undefined) {
+                componentNames.push(editor.targetName);
+            } else {
+                let items = path.split('/');
+                componentNames.push(items[items.length - 1]);
+            }
         }
         let componentList = document.createElement('div') as HTMLDivElement;
         componentList.classList.add('component-list');
         componentList.innerHTML = `<div class="row">
             <div class="col-12">
-                <input type="text" class="component-search" placeholder="Search">
+                <div class="component-search-area">
+                    <input type="text" class="component-search" placeholder="Search">
+                </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="component-header">Component</div>
+            </div>
+        </div>
+        <div class="row componet-item-list">
         </div>`;
         addComponent.appendChild(componentList);
-        let compSearch = addComponent.querySelector('#inspector .component-search') as HTMLInputElement;
+        let compSearchList = addComponent.querySelector('#inspector .component-list .componet-item-list') as HTMLInputElement;
+        let compSearch = addComponent.querySelector('#inspector .component-list .component-search') as HTMLInputElement;
+
+        componentNames.forEach(name => {
+            let compItem = document.createElement('div') as HTMLDivElement;
+            compItem.innerHTML = `<a href="">${name}</a>`;
+            compItem.classList.add('col-12');
+            compSearchList.appendChild(compItem);
+        });
+        let items = addComponent.querySelectorAll('#inspector .component-list .componet-item-list a') as NodeListOf<HTMLAnchorElement>;
+        for (let i = 0; i < items.length; i++) {
+            items[i].addEventListener('click', (event) => {
+                event.preventDefault();
+                gameObject.addComponent(Move);
+                drawInspector(gameObject);
+            });
+        }
+
         compSearch.focus();
     });
 
     let colors: NodeListOf<HTMLDivElement> = document.querySelectorAll(`div.color-property`) as NodeListOf<HTMLDivElement>;
-    for(var i = 0; i < colors.length; i++){
+    for (var i = 0; i < colors.length; i++) {
         colors[i].addEventListener('click', (event) => {
             let target = event.currentTarget as HTMLElement;
             let propertyName = target.getAttribute('data-name');
             let color = target.getAttribute('data-color');
-            window.dispatchEvent(new CustomEvent('onColorPicker', { detail: {
-                gameObjectId: inspector.getAttribute('data-gameobject-id'),
-                componentId: target.closest('.component').getAttribute('data-component-id'),
-                propertyName: propertyName,
-                color: color
-            } }));
+            window.dispatchEvent(new CustomEvent('onColorPicker', {
+                detail: {
+                    gameObjectId: inspector.getAttribute('data-gameobject-id'),
+                    componentId: target.closest('.component').getAttribute('data-component-id'),
+                    propertyName: propertyName,
+                    color: color
+                }
+            }));
         });
     }
 }

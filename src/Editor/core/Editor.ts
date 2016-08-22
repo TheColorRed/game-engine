@@ -2,7 +2,7 @@ class Editor {
 
     public targetName: string;
     protected target: Component;
-    protected activeGameObject: GameObject;
+    public static activeGameObject: GameObject;
     public static inspector: HTMLElement;
     public properties: string[] = [];
 
@@ -13,9 +13,6 @@ class Editor {
         this.targetName = object.name;
     }
 
-    public setActiveGameObject(gameObject: GameObject) {
-        this.activeGameObject = gameObject;
-    }
 
     public setSerializedObject(component: Component) {
         this.serializedObject = new SerializedObject(component);

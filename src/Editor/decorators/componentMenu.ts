@@ -2,9 +2,10 @@
 
 function setComponentMenu(text: string): any {
     return (constructor) => {
-        Reflect.defineMetadata("componentPath", text, constructor.prototype, "class");
+        Reflect.defineMetadata('componentPath', text, constructor.prototype, 'class');
     }
 }
-function getMenuPath(target: any): any {
-    return Reflect.getMetadata("componentPath", target.constructor.prototype, "class");
+
+function getMenuPath(target: any): string {
+    return Reflect.getMetadata('componentPath', target.constructor.prototype, 'class');
 }

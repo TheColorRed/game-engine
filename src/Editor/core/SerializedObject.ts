@@ -11,6 +11,7 @@ class SerializedObject {
     }
 
     public findProperty(key): SerializedProperty {
-        return new SerializedProperty(key, this.object[key] || null);
+        return new SerializedProperty(this.object, key, this.object[key] || null);
     }
+
 }

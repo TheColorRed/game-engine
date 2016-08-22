@@ -165,11 +165,30 @@ canvas {
     right: 0;
     margin-top: 10px;
     box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-    padding: 10px;
     border: solid 1px #585858;
 }
 
+#inspector .component-list .component-search-area {
+    padding: 10px;
+}
 #inspector .component-list .component-search {
     padding: 5px;
     border-radius: 3px;
+}
+#inspector .component-list .componet-item-list a {
+    display: block;
+    color: #a3a3a3;
+    text-decoration: none;
+    padding: 5px;
+}
+#inspector .component-list .componet-item-list a:hover {
+    background-color: #4f86f7;
+    color: #ffffff;
+}
+#inspector .component-list .component-header {
+    background-color: #3e3e3e;
+    font-weight: bold;
+    padding: 10px;
+    border-top: solid 1px #292929;
+    border-bottom: solid 1px #292929;
 }

@@ -3,6 +3,7 @@
 function serializable(...args): any {
     return Reflect.metadata('serializable', true);
 }
+
 function isSerializable(target: any, propertyKey: string) {
     return Reflect.getMetadata('serializable', target, propertyKey);
 }

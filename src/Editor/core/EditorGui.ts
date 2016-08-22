@@ -6,7 +6,7 @@ class EditorGui {
         compItem.classList.add('row');
         compItem.innerHTML = drawString;
         let inputs = compItem.querySelectorAll('input') as NodeListOf<HTMLInputElement>;
-        for (let i = 0; i < inputs.length; i++){
+        for (let i = 0; i < inputs.length; i++) {
             inputs[i].addEventListener('click', (event) => {
                 inputs[i].select();
             });
@@ -50,10 +50,10 @@ class EditorGui {
     }
 
     public static numberField(field: SerializedProperty): void {
-        // console.log(rangeMin(field, field.name));
+        let range = getRange(field.object, field.name);
         this.draw(`<div class="property-name col-4">${field.displayName}</div>
         <div class="col-8">
-            <input type="number" class="input" value="${field.numberValue}">
+            <input type="number" ${range[0] ? 'min="' + range[0] + '"' : ''} ${range[1] ? 'max="' + range[1] + '"' : ''} class="input" value="${field.numberValue}">
         </div>`);
     }
 
