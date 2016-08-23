@@ -1,5 +1,7 @@
 class EditorGui {
 
+    private monkey: string;
+
     protected static draw(drawString: string) {
         let compItem = document.createElement('div') as HTMLDivElement;
         compItem.classList.add('component-property');
@@ -53,7 +55,7 @@ class EditorGui {
         let range = getRange(field.object, field.name);
         this.draw(`<div class="property-name col-4">${field.displayName}</div>
         <div class="col-8">
-            <input type="number" ${range[0] ? 'min="' + range[0] + '"' : ''} ${range[1] ? 'max="' + range[1] + '"' : ''} class="input" value="${field.numberValue}">
+            <input type="number" data-name="${field.name}" ${range[0] ? 'min="' + range[0] + '"' : ''} ${range[1] ? 'max="' + range[1] + '"' : ''} class="input" value="${field.numberValue}">
         </div>`);
     }
 

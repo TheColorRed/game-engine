@@ -33,11 +33,17 @@ class GameObject extends Obj {
         return comps;
     }
 
-    public addComponent<T extends Component>(type: ComponentType<T>): T {
+    public addComponent<T extends Component>(type: ComponentType<T> | string): T {
         let comp;
-        comp = new type() as T;
+        if (typeof type === 'string') {
+            let evalT = type.replace(/[^a-zA-Z0-9_]/ig, '');
+            comp = new (eval(evalT))() as T;
+        } else {
+            comp = new type() as T;
+        }
         comp.name = comp.constructor.name;
         comp.setGameObject(this);
+        comp.setTransform(this._transform);
         comp.behavior = comp;
         comp.isEnabled = this.isEnabled;
         this._components.push(comp);

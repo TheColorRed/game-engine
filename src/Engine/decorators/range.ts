@@ -7,5 +7,5 @@ function range(min: number, max: number): any {
 }
 
 function getRange(target: any, propertyKey: string) {
-    return Reflect.getMetadata('range', target, propertyKey).split(',');
+    return (Reflect.getMetadata('range', target, propertyKey) || '').split(',');
 }

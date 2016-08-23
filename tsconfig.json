@@ -6,8 +6,7 @@
         "rootDir": "./src",
         "removeComments": true,
         "experimentalDecorators": true,
-        "watch": true,
-        "allowJs": true
+        "watch": true
     },
     "exclude": [
         "node_modules",

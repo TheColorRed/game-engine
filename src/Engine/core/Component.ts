@@ -8,6 +8,7 @@ class Component extends Obj {
     public behavior: MonoBehavior;
 
     protected gameObject: GameObject;
+    protected transform: Transform;
 
     public hasStarted: boolean = false;
     public hasAwaken: boolean = false;
@@ -18,6 +19,10 @@ class Component extends Obj {
 
     public setGameObject(gameObject: GameObject) {
         this.gameObject = gameObject;
+    }
+
+    public setTransform(transform: Transform) {
+        this.transform = transform;
     }
 
 }

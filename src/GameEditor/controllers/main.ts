@@ -301,6 +301,18 @@ function drawInspector(gameObject: GameObject) {
         inspector.appendChild(inspectorComp);
     });
 
+    let numberInputs = document.querySelectorAll('input[min], input[max]') as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i < numberInputs.length; i++) {
+        let input = numberInputs[i];
+        input.addEventListener('blur', (event) => { validateRangeInput(input); });
+        input.addEventListener('keypress', (event) => {
+            if (event.keyCode == 13) {
+                validateRangeInput(input);
+            }
+        });
+    }
+
+
     let addComponent = document.createElement('div') as HTMLDivElement;
     addComponent.classList.add('component');
     addComponent.innerHTML = `<div class="row">
@@ -314,15 +326,18 @@ function drawInspector(gameObject: GameObject) {
     let compButton = document.querySelector('a.add-component') as HTMLAnchorElement;
     compButton.addEventListener('click', (event) => {
         event.preventDefault();
-        let componentNames: string[] = [];
+        // let componentNames: string[] = [];
+        let componentItems: { name: string, type: string }[] = [];
         for (let i = 0; i < Globals.editors.length; i++) {
             let editor: Editor = Globals.editors[i];
             let path = getMenuPath(editor);
             if (path == undefined) {
-                componentNames.push(editor.targetName);
+                componentItems.push({ name: editor.targetName, type: editor.targetName });
             } else {
-                let items = path.split('/');
-                componentNames.push(items[items.length - 1]);
+                if (path.length > 0) {
+                    let items = path.split('/');
+                    componentItems.push({ name: items[items.length - 1], type: editor.targetName });
+                }
             }
         }
         let componentList = document.createElement('div') as HTMLDivElement;
@@ -345,17 +360,18 @@ function drawInspector(gameObject: GameObject) {
         let compSearchList = addComponent.querySelector('#inspector .component-list .componet-item-list') as HTMLInputElement;
         let compSearch = addComponent.querySelector('#inspector .component-list .component-search') as HTMLInputElement;
 
-        componentNames.forEach(name => {
+        componentItems.forEach(item => {
             let compItem = document.createElement('div') as HTMLDivElement;
-            compItem.innerHTML = `<a href="">${name}</a>`;
+            compItem.innerHTML = `<a href="" data-type="${item.type}">${item.name}</a>`;
             compItem.classList.add('col-12');
             compSearchList.appendChild(compItem);
         });
         let items = addComponent.querySelectorAll('#inspector .component-list .componet-item-list a') as NodeListOf<HTMLAnchorElement>;
         for (let i = 0; i < items.length; i++) {
-            items[i].addEventListener('click', (event) => {
+            let item = items[i];
+            item.addEventListener('click', (event) => {
                 event.preventDefault();
-                gameObject.addComponent(Move);
+                gameObject.addComponent(item.getAttribute('data-type'));
                 drawInspector(gameObject);
             });
         }
@@ -378,6 +394,16 @@ function drawInspector(gameObject: GameObject) {
                 }
             }));
         });
+    }
+}
+
+function validateRangeInput(input: HTMLInputElement) {
+    let min = input.getAttribute('min');
+    let max = input.getAttribute('max');
+    if (input.value < min) {
+        input.value = min;
+    } else if (input.value > max) {
+        input.value = max;
     }
 }
 

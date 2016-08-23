@@ -27,9 +27,7 @@ class SerializedProperty {
     }
 
     public get type(): string {
-        if (!isNaN(parseFloat(this._property)) && isFinite(this._property)) {
-            return 'number';
-        }
+        console.log(this._property)
         return this._property.constructor.name;
     }
 

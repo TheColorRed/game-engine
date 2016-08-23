@@ -1,4 +1,5 @@
 @customEditor(Transform)
+@setComponentMenu('')
 class TransformEditor extends Editor {
 
     protected position: SerializedProperty;

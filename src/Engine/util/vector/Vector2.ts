@@ -8,6 +8,30 @@ class Vector2 {
         this.y = y;
     }
 
+    public times(amount: number): this {
+        this.x *= amount;
+        this.y *= amount;
+        return this;
+    }
+
+    public dividedBy(amount: number): this {
+        this.x /= amount;
+        this.y /= amount;
+        return this;
+    }
+
+    public plus(amount: number): this {
+        this.x += amount;
+        this.y += amount;
+        return this;
+    }
+
+    public minus(amount: number): this {
+        this.x -= amount;
+        this.y -= amount;
+        return this;
+    }
+
     public static get zero(): Vector2 {
         return new Vector2(0, 0);
     }
