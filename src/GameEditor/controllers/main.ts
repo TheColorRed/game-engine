@@ -7,6 +7,7 @@ const gameObjectMenu = require(__dirname + '/../menus/gameObjectMenu');
 
 // Utilities
 import fs = require('fs');
+import path = require('path');
 
 // Sections
 let hierarchy: HTMLDivElement, editor: HTMLDivElement, inspector: HTMLDivElement;
@@ -49,6 +50,7 @@ window.addEventListener('load', () => {
             pause.classList.remove('active');
         } else {
             game = new SpyNginMain();
+            game.init(scene);
             ObjectManager.setItems(GameObjectManager.items);
             game.startGame();
             play.classList.add('active');
@@ -131,6 +133,14 @@ window.addEventListener('onUpdateScene', function (event: CustomEvent) {
                 context.fillStyle = `#${comp.backgroundColor.hex}`;
                 context.fillRect(0, 0, scene.width, scene.height);
             }
+            if (comp instanceof SpriteRenderer) {
+                comp.sprite.image.onload = function() {
+                    context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);
+                }
+                if (comp.sprite.image) {
+                    context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);
+                }
+            }
         });
     });
 });
@@ -188,7 +198,25 @@ ipcRenderer.on('color-selected', (event, content: { gameObjectId: string, compon
     updateScene();
 });
 
-window.addEventListener('onCreateGameobject', (event: CustomEvent) => {
+ipcRenderer.on('selector-selected', (event, content: { gameObjectId: string, componentId: string, propertyName: string, value: string }) => {
+    let gameObject = GameObjectManager.getItemById(content.gameObjectId);
+    gameObject.components.forEach(comp => {
+        if (comp.instanceId == content.componentId) {
+            let properties: string[] = Object.getOwnPropertyNames(comp);
+            properties.forEach(property => {
+                if (property == content.propertyName) {
+                    let sprite: Sprite = Sprite.create(content.value);
+                    sprite.name = path.parse(content.value).name;
+                    comp[property] = sprite;
+                }
+            });
+        }
+    });
+    drawInspector(gameObject);
+    updateScene();
+});
+
+window.addEventListener('onCreateGameObject', (event: CustomEvent) => {
     let createGameObject = new GameObject;
     let isChild: boolean = (event.detail || {}).child || false;
     if (isChild) {
@@ -206,9 +234,15 @@ window.addEventListener('onDeleteGameObject', (event) => {
 });
 
 window.addEventListener('onCreateCamera', (event) => {
-    var createCamera = new GameObject('Camera');
+    let createCamera = new GameObject('Camera');
     createCamera.addComponent(Camera);
     GameObjectManager.addItem(createCamera);
+});
+
+window.addEventListener('onCreateSprite', (event) => {
+    let createSprite = new GameObject('Sprite');
+    createSprite.addComponent(SpriteRenderer);
+    GameObjectManager.addItem(createSprite);
 });
 
 window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
@@ -291,7 +325,6 @@ function drawInspector(gameObject: GameObject) {
         for (let i = 0; i < Globals.editors.length; i++) {
             let editor: Editor = Globals.editors[i];
             if (comp.constructor.name == editor.targetName) {
-                // console.log(comp);
                 editor.setSerializedObject(comp);
                 editor.onEnable();
                 editor.onUpdate();
@@ -299,6 +332,7 @@ function drawInspector(gameObject: GameObject) {
             }
         };
         inspector.appendChild(inspectorComp);
+        EditorGui.applyModifiedValues();
     });
 
     let numberInputs = document.querySelectorAll('input[min], input[max]') as NodeListOf<HTMLInputElement>;
@@ -395,18 +429,37 @@ function drawInspector(gameObject: GameObject) {
             }));
         });
     }
+    let sprites: NodeListOf<HTMLDivElement> = document.querySelectorAll(`div.sprite-property`) as NodeListOf<HTMLDivElement>;
+    for (var i = 0; i < sprites.length; i++) {
+        sprites[i].addEventListener('click', (event) => {
+            let target = event.currentTarget as HTMLElement;
+            let propertyName = target.getAttribute('data-name');
+            window.dispatchEvent(new CustomEvent('onSelector', {
+                detail: {
+                    gameObjectId: inspector.getAttribute('data-gameobject-id'),
+                    componentId: target.closest('.component').getAttribute('data-component-id'),
+                    propertyName: propertyName,
+                    selectionType: 'sprite'
+                }
+            }));
+        });
+    }
+    updateScene();
 }
 
 function validateRangeInput(input: HTMLInputElement) {
-    let min = input.getAttribute('min');
-    let max = input.getAttribute('max');
-    if (input.value < min) {
-        input.value = min;
-    } else if (input.value > max) {
-        input.value = max;
+    let min = parseFloat(input.getAttribute('min'));
+    let max = parseFloat(input.getAttribute('max'));
+    if (parseFloat(input.value) < min) {
+        input.value = min.toString();
+    } else if (parseFloat(input.value) > max) {
+        input.value = max.toString();
     }
 }
 
 window.addEventListener('onColorPicker', (event: CustomEvent) => {
     ipcRenderer.send('color-picker', event.detail);
+});
+window.addEventListener('onSelector', (event: CustomEvent) => {
+    ipcRenderer.send('selector', event.detail);
 });

@@ -175,13 +175,13 @@ canvas {
     padding: 5px;
     border-radius: 3px;
 }
-#inspector .component-list .componet-item-list a {
+#inspector .component-list .componet-item-list a, .list-item {
     display: block;
     color: #a3a3a3;
     text-decoration: none;
     padding: 5px;
 }
-#inspector .component-list .componet-item-list a:hover {
+#inspector .component-list .componet-item-list a:hover, .list-item:hover {
     background-color: #4f86f7;
     color: #ffffff;
 }

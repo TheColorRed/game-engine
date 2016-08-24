@@ -5,11 +5,14 @@ export const menu = Menu.buildFromTemplate([
     {
         label: 'Create Empty',
         click: () => {
-            window.dispatchEvent(new CustomEvent('onCreateGameobject'));
+            window.dispatchEvent(new CustomEvent('onCreateGameObject'));
         }
     },
     {
-        label: 'Sprite'
+        label: 'Sprite',
+        click: () => {
+            window.dispatchEvent(new CustomEvent('onCreateSprite'));
+        }
     },
     {
         label: 'Light'

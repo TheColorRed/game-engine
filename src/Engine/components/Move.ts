@@ -6,7 +6,10 @@ class Move extends Component {
     public speed: number = 0;
 
     public update() {
-        this.transform.translate(Vector2.right.times(speed).times(Time.deltaTime));
+        let x = Math.cos(this.direction * Math.PI/180);
+        let y = Math.sin(this.direction * Math.PI/180);
+        this.transform.translate((new Vector2(x, y)).times(this.speed).times(Time.deltaTime));
+        // this.transform.translate(Vector2.right.times(this.speed).times(Time.deltaTime));
     }
 
 }

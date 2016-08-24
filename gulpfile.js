@@ -87,6 +87,7 @@ gulp.task('compile-engine', ['rm-build'], function () {
         './src/Engine/components/*.ts',
         './src/Engine/util/Time.ts',
         './src/Engine/util/Debug.ts',
+        './src/Engine/util/Sprite.ts',
         './src/Engine/util/color/Color.ts',
         './src/Engine/util/vector/Vector2.ts',
         './src/Engine/util/vector/Vector3.ts',

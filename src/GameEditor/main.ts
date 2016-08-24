@@ -6,6 +6,7 @@ import {
 
 let mainWindow: Electron.BrowserWindow;
 let colorWindow: Electron.BrowserWindow;
+let selectorWindow: Electron.BrowserWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
@@ -78,4 +79,31 @@ ipcMain.on('color-cancel', (event) => {
 ipcMain.on('color-okay', (event, contents) => {
     mainWindow.webContents.send('color-selected', contents);
     colorWindow.close();
+});
+
+ipcMain.on('selector', (event, details) => {
+    selectorWindow = new BrowserWindow({
+        width: 300,
+        height: 550,
+        show: false,
+        darkTheme: true,
+        hasShadow: true,
+        parent: mainWindow,
+        resizable: false
+    });
+    selectorWindow.loadURL(`file://${__dirname}/resources/views/selector.html`);
+    selectorWindow.setMenu(null);
+    // Close the window when it is no longer focused
+    // selectorWindow.on('blur', () => { selectorWindow.close(); });
+    // Display window when render is complete
+    selectorWindow.on('ready-to-show', () => {
+        selectorWindow.show();
+        selectorWindow.webContents.send('init', details);
+        // selectorWindow.webContents.openDevTools();
+    });
+});
+
+ipcMain.on('selector-okay', (event, contents) => {
+    mainWindow.webContents.send('selector-selected', contents);
+    selectorWindow.close();
 });

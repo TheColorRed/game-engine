@@ -27,7 +27,6 @@ class SerializedProperty {
     }
 
     public get type(): string {
-        console.log(this._property)
         return this._property.constructor.name;
     }
 

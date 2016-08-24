@@ -30,6 +30,30 @@ class EditorGui {
                 return this.vector3Field(field);
             case 'color':
                 return this.colorField(field);
+            case 'sprite':
+                return this.spriteField(field);
+        }
+    }
+
+    public static applyModifiedValues(): void {
+        let inputs = document.querySelectorAll('#inspector input') as NodeListOf<HTMLInputElement>;
+        for (let i = 0; i < inputs.length; i++) {
+            let input = inputs[i];
+            input.addEventListener('input', event => {
+                let gameObjectId = document.querySelector('#inspector').getAttribute('data-gameobject-id');
+                let gameObject = GameObjectManager.getItemById(gameObjectId);
+                let componentId = input.closest('.component').getAttribute('data-component-id');
+                gameObject.components.forEach(comp => {
+                    if (comp.instanceId == componentId) {
+                        let properties: string[] = Object.getOwnPropertyNames(comp);
+                        properties.forEach(property => {
+                            if (property == input.getAttribute('data-name')) {
+                                comp[property] = input.value;
+                            }
+                        });
+                    }
+                });
+            });
         }
     }
 
@@ -63,6 +87,16 @@ class EditorGui {
         this.draw(`<div class="property-name col-4">${field.displayName}</div>
         <div class="col-8">
             <div data-name="${field.name}" data-color="${field.colorValue.hex}" class="color-property col-8" style="background-color: #${field.colorValue.hex};"></div>
+        </div>`);
+    }
+
+    public static spriteField(field: SerializedProperty): void {
+        this.draw(`<div class="property-name col-4">${field.displayName}</div>
+        <div class="col-8">
+            <div data-name="${field.name}" class="input clickable sprite-property">
+                <img src="${field.value.path}" width="16px" height="16px" style="display: inline-block;margin-top: 2px;vertical-align: middle;margin-right: 5px;">
+                <span style="display: inline-block; vertical-align: middle;">${field.value.name || 'None'}</span>
+            </div>
         </div>`);
     }
 

@@ -7,7 +7,8 @@ class Transform extends Component {
     public parent: Transform;
 
     public translate(translation: Vector2) {
-        this.position = translation;
+        this.position.x += translation.x;
+        this.position.y += translation.y;
     }
 
 }

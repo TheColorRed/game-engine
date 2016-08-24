@@ -8,6 +8,14 @@ class SpyNginMain {
     private startTime = 0;
     private _isPlaying: boolean = false;
 
+    private canvas: HTMLCanvasElement;
+    private context: CanvasRenderingContext2D;
+
+    public init(canvas: HTMLCanvasElement){
+        this.canvas = canvas;
+        this.context = this.canvas.getContext('2d');
+    }
+
     public startGame() {
         this._isPlaying = true;
         this.tick();
@@ -27,7 +35,6 @@ class SpyNginMain {
     }
 
     protected tick(): void {
-        console.log('tick')
         let d = new Date().getTime();
         Time.setFrameTime((d - this.startTime) / 1000);
         var nanoSeconds = this.getNanoSeconds;
@@ -48,7 +55,11 @@ class SpyNginMain {
         this.enable();
         this.start();
 
+        this.update();
+
         this.lastCheck();
+
+        this.render();
 
         var next = (this.lastLoopTime - nanoSeconds + this.optimalTime) / 1000000;
         if(this.isPlaying){
@@ -102,6 +113,17 @@ class SpyNginMain {
                 }
                 if (item.shouldDisable) {
                     comp.behavior.isEnabled = false;
+                }
+            });
+        });
+    }
+
+    private render() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ObjectManager.items.forEach(item => {
+            item.components.forEach(comp => {
+                if (comp instanceof SpriteRenderer) {
+                    this.context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);
                 }
             });
         });
