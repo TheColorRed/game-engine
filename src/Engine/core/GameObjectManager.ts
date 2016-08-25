@@ -1,4 +1,4 @@
-class ObjectManager {
+class GameObjectManager {
 
     protected static _items: GameObject[] = [];
 
@@ -6,15 +6,19 @@ class ObjectManager {
         return this._items;
     }
 
-    public static setItems(items: GameObject[]) {
+    public static clear() {
+        this._items = [];
+    }
+
+    public static set(items: GameObject[]) {
         this._items = items;
     }
 
-    public static addItem(item: GameObject) {
+    public static add(item: GameObject) {
         this._items.push(item);
     }
 
-    public static removeItems(item: GameObject) {
+    public static remove(item: GameObject) {
         var idx: number = this._items.indexOf(item);
         if (idx > -1) {
             this._items.splice(idx, 1);

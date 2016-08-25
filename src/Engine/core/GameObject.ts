@@ -8,7 +8,7 @@ class GameObject extends Obj {
         super();
         this.name = name;
         this._transform = this.addComponent(Transform);
-        ObjectManager.addItem(this);
+        GameObjectManager.add(this);
     }
 
     public get transform(): Transform {
@@ -50,10 +50,17 @@ class GameObject extends Obj {
         return comp;
     }
 
-    public getComponent<T extends Component>(type: ComponentType<T>): T {
+    public getComponent<T extends Component>(type: ComponentType<T> | string): T {
         for (let i = 0; i < this._components.length; i++) {
-            if (this._components[i].constructor == type.constructor) {
-                return this._components[i] as T;
+            if (typeof type === 'string') {
+                let evalT = type.replace(/[^a-zA-Z0-9_]/ig, '');
+                if (this._components[i].constructor.name == evalT) {
+                    return this._components[i] as T;
+                }
+            } else {
+                if (this._components[i].constructor == type) {
+                    return this._components[i] as T;
+                }
             }
         }
         return null;

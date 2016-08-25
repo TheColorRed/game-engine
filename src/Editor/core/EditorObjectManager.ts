@@ -1,9 +1,13 @@
-class GameObjectManager {
+class EditorObjectManager {
 
     protected static _items: GameObject[] = [];
 
     public static get items(): GameObject[] {
         return this._items;
+    }
+
+    public static clear(): void {
+        this._items = [];
     }
 
     public static setItems(items: GameObject[]) {

@@ -22,7 +22,7 @@ ipcRenderer.on('init', (event, selectDetails: { gameObjectId: string, componentI
     switch (selectionType.toLowerCase()) {
         case 'sprite':
             document.querySelector('title').innerHTML = 'Sprite Selector';
-            loadFiles('/Users/rnaddy/Pictures');
+            loadFiles('/home/ryan/Pictures');
             break;
         case 'gameobject':
             document.querySelector('title').innerHTML = 'GameObject Selector';

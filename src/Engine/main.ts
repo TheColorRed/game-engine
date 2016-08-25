@@ -11,9 +11,13 @@ class SpyNginMain {
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
 
-    public init(canvas: HTMLCanvasElement){
+    public init(canvas: HTMLCanvasElement, prefabs: Prefab[]){
         this.canvas = canvas;
         this.context = this.canvas.getContext('2d');
+        GameObjectManager.clear();
+        prefabs.forEach(prefab => {
+            Prefab.toObject(prefab);
+        });
     }
 
     public startGame() {
@@ -30,8 +34,16 @@ class SpyNginMain {
     }
 
     private get getNanoSeconds(): number {
-        // console.log((new Date).getMilliseconds())
         return (new Date()).getTime() * 1000000;
+    }
+
+    protected clone(obj) {
+        if (null == obj || "object" != typeof obj) return obj;
+        var copy = new obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
     }
 
     protected tick(): void {
@@ -48,7 +60,6 @@ class SpyNginMain {
             this.lastFpsTime = 0;
         }
 
-        // Set the delta on each berry
         Time.setDeltaTime(delta / this.targetFps);
 
         this.awake();
@@ -68,13 +79,13 @@ class SpyNginMain {
     }
 
     protected awake(): void {
-        ObjectManager.items.forEach(item => {
+        GameObjectManager.items.forEach(item => {
             item.sendMessage('awake');
         });
     }
 
     protected enable(): void {
-        ObjectManager.items.forEach(item => {
+        GameObjectManager.items.forEach(item => {
             if (!item.lastFrameEnabled) {
                 item.sendMessage('onEnable');
             }
@@ -82,25 +93,25 @@ class SpyNginMain {
     }
 
     protected start(): void {
-        ObjectManager.items.forEach(item => {
+        GameObjectManager.items.forEach(item => {
             item.sendMessage('start');
         });
     }
 
     private update(): void {
-        ObjectManager.items.forEach(item => {
+        GameObjectManager.items.forEach(item => {
             item.sendMessage('update');
         });
     }
 
     private lateUpdate(): void {
-        ObjectManager.items.forEach(item => {
+        GameObjectManager.items.forEach(item => {
             item.sendMessage('lateUpdate');
         });
     }
 
     private lastCheck() {
-        ObjectManager.items.forEach(item => {
+        GameObjectManager.items.forEach(item => {
             if (item.shouldDisable) {
                 item.isEnabled = false;
                 item.shouldDisable = false;
@@ -120,10 +131,23 @@ class SpyNginMain {
 
     private render() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        ObjectManager.items.forEach(item => {
+        let renderItems: GameObject[] = GameObjectManager.items;
+        renderItems.sort(function (a, b) {
+            let ar = a.getComponent(SpriteRenderer);
+            let br = b.getComponent(SpriteRenderer);
+            if (ar && br) {
+                if (ar.depth < br.depth)
+                    return -1;
+                if (ar.depth > br.depth)
+                    return 1;
+            }
+            return 0;
+        });
+        // console.log(renderItems)
+        renderItems.forEach(item => {
             item.components.forEach(comp => {
-                if (comp instanceof SpriteRenderer) {
-                    this.context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);
+                if (comp instanceof SpriteRenderer && comp.sprite.image) {
+                    this.context.drawImage(comp.sprite.image, item.transform.position.x, item.transform.position.y);
                 }
             });
         });

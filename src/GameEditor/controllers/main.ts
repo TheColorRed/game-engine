@@ -22,11 +22,14 @@ let play: HTMLAnchorElement, pause: HTMLAnchorElement;
 let rightClicked: HTMLElement, selected: HTMLElement;
 let game: SpyNginMain = null;
 
+let prefabs: Prefab[] = [];
+
 // Initialize the window
 window.addEventListener('load', () => {
     hierarchy = document.querySelector('section#hierarchy') as HTMLDivElement;
     hierarchy.addEventListener('mousedown', (event) => {
         if (event.button == 2) {
+            console.log('here')
             hierarchyMenu.menu.popup();
         }
     });
@@ -48,10 +51,18 @@ window.addEventListener('load', () => {
             game = null;
             play.classList.remove('active');
             pause.classList.remove('active');
+            EditorObjectManager.clear();
+            prefabs.forEach(prefab => {
+                EditorObjectManager.addItem(Prefab.toObject(prefab));
+            });
+            updateScene();
         } else {
             game = new SpyNginMain();
-            game.init(scene);
-            ObjectManager.setItems(GameObjectManager.items);
+            prefabs = [];
+            EditorObjectManager.items.forEach(item => {
+                prefabs.push(Prefab.create(item));
+            });
+            game.init(scene, prefabs);
             game.startGame();
             play.classList.add('active');
         }
@@ -69,7 +80,14 @@ window.addEventListener('load', () => {
         }
     });
 });
-
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = new obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
 ipcRenderer.on('rename-selected', () => {
     let text = selected.innerText
         .replace(/&/g, "&amp;")
@@ -85,7 +103,7 @@ ipcRenderer.on('rename-selected', () => {
     input.addEventListener('keyup', (event) => {
         if (event.keyCode == 13) {
             let id: string = input.getAttribute('data-id');
-            let gameObject: GameObject = GameObjectManager.getItemById(id);
+            let gameObject: GameObject = EditorObjectManager.getItemById(id);
             gameObject.name = input.value;
             selected.innerText = input.value;
         }
@@ -127,13 +145,13 @@ window.addEventListener('onUpdateScene', function (event: CustomEvent) {
     let drawOrder: GameObject[] = [];
     let context = scene.getContext('2d');
     context.clearRect(0, 0, scene.width, scene.height);
-    GameObjectManager.items.forEach(gameObject => {
+    EditorObjectManager.items.forEach(gameObject => {
         gameObject.components.forEach(comp => {
             if (comp instanceof Camera) {
                 context.fillStyle = `#${comp.backgroundColor.hex}`;
                 context.fillRect(0, 0, scene.width, scene.height);
             }
-            if (comp instanceof SpriteRenderer) {
+            if (comp instanceof SpriteRenderer && comp.sprite.image) {
                 comp.sprite.image.onload = function() {
                     context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);
                 }
@@ -183,7 +201,7 @@ ipcRenderer.on('open-project', (event, folders: string[]) => {
 });
 
 ipcRenderer.on('color-selected', (event, content: { gameObjectId: string, componentId: string, propertyName: string, hexColor: string }) => {
-    let gameObject = GameObjectManager.getItemById(content.gameObjectId);
+    let gameObject = EditorObjectManager.getItemById(content.gameObjectId);
     gameObject.components.forEach(comp => {
         if (comp.instanceId == content.componentId) {
             let properties: string[] = Object.getOwnPropertyNames(comp);
@@ -199,7 +217,7 @@ ipcRenderer.on('color-selected', (event, content: { gameObjectId: string, compon
 });
 
 ipcRenderer.on('selector-selected', (event, content: { gameObjectId: string, componentId: string, propertyName: string, value: string }) => {
-    let gameObject = GameObjectManager.getItemById(content.gameObjectId);
+    let gameObject = EditorObjectManager.getItemById(content.gameObjectId);
     gameObject.components.forEach(comp => {
         if (comp.instanceId == content.componentId) {
             let properties: string[] = Object.getOwnPropertyNames(comp);
@@ -220,15 +238,15 @@ window.addEventListener('onCreateGameObject', (event: CustomEvent) => {
     let createGameObject = new GameObject;
     let isChild: boolean = (event.detail || {}).child || false;
     if (isChild) {
-        let parent = GameObjectManager.getItemById(rightClicked.getAttribute('data-id'));
+        let parent = EditorObjectManager.getItemById(rightClicked.getAttribute('data-id'));
         createGameObject.transform.parent = parent.transform;
     }
-    GameObjectManager.addItem(createGameObject);
+    EditorObjectManager.addItem(createGameObject);
 });
 
 window.addEventListener('onDeleteGameObject', (event) => {
-    let gameObject = GameObjectManager.getItemById(rightClicked.getAttribute('data-id'));
-    GameObjectManager.removeItem(gameObject);
+    let gameObject = EditorObjectManager.getItemById(rightClicked.getAttribute('data-id'));
+    EditorObjectManager.removeItem(gameObject);
     clearInspector();
     updateScene();
 });
@@ -236,20 +254,20 @@ window.addEventListener('onDeleteGameObject', (event) => {
 window.addEventListener('onCreateCamera', (event) => {
     let createCamera = new GameObject('Camera');
     createCamera.addComponent(Camera);
-    GameObjectManager.addItem(createCamera);
+    EditorObjectManager.addItem(createCamera);
 });
 
 window.addEventListener('onCreateSprite', (event) => {
     let createSprite = new GameObject('Sprite');
     createSprite.addComponent(SpriteRenderer);
-    GameObjectManager.addItem(createSprite);
+    EditorObjectManager.addItem(createSprite);
 });
 
 window.addEventListener('onObjectManagerChanged', (event: CustomEvent) => {
     hierarchy.innerHTML = '';
     var depth = 0;
     var obj = event.detail;
-    GameObjectManager.items.forEach(gameObject => {
+    EditorObjectManager.items.forEach(gameObject => {
         let div = document.createElement('div');
         div.innerText = gameObject.name;
         div.classList.add('game-object');
@@ -301,7 +319,7 @@ function selectGameObject(target: HTMLElement) {
     // let target = event.detail as HTMLElement;
     let id = target.getAttribute('data-id');
     inspector.setAttribute('data-gameobject-id', id);
-    let gameObject = GameObjectManager.getItemById(id);
+    let gameObject = EditorObjectManager.getItemById(id);
     drawInspector(gameObject);
 };
 
