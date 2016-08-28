@@ -46,6 +46,7 @@ window.addEventListener('load', () => {
     pause = document.querySelector('a#pause') as HTMLAnchorElement;
     play.addEventListener('click', (event) => {
         event.preventDefault();
+        // Game has started
         if (game instanceof SpyNginMain) {
             game.stopGame();
             game = null;
@@ -56,7 +57,9 @@ window.addEventListener('load', () => {
                 EditorObjectManager.addItem(Prefab.toObject(prefab));
             });
             updateScene();
-        } else {
+        }
+        // Game has not started
+        else {
             game = new SpyNginMain();
             prefabs = [];
             EditorObjectManager.items.forEach(item => {
