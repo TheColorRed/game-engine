@@ -12,7 +12,11 @@ class Prefab {
             for (let c in comp) {
                 let prefabProp = new PrefabProperty;
                 prefabProp.name = c;
-                prefabProp.value = comp[c];
+                if (typeof comp[c] == 'object') {
+                    prefabProp.value = Object.create(comp[c]);
+                } else {
+                    prefabProp.value = comp[c];
+                }
                 prefabComp.properties.push(prefabProp);
             }
             prefab.components.push(prefabComp);
@@ -33,6 +37,8 @@ class Prefab {
             comp.properties.forEach(prop => {
                 if (prop.value instanceof Sprite) {
                     newComp[prop.name] = Sprite.create(prop.value.path);
+                } else if (typeof prop.value == 'object') {
+                    newComp[prop.name] = Object.create(prop.value);
                 } else {
                     newComp[prop.name] = prop.value;
                 }

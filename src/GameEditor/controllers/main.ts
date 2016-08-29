@@ -47,11 +47,13 @@ window.addEventListener('load', () => {
     play.addEventListener('click', (event) => {
         event.preventDefault();
         // Game has started
+        // Stop was pressed
         if (game instanceof SpyNginMain) {
             game.stopGame();
             game = null;
             play.classList.remove('active');
             pause.classList.remove('active');
+            // Reset the editor
             EditorObjectManager.clear();
             prefabs.forEach(prefab => {
                 EditorObjectManager.addItem(Prefab.toObject(prefab));
@@ -59,6 +61,7 @@ window.addEventListener('load', () => {
             updateScene();
         }
         // Game has not started
+        // Play was pressed
         else {
             game = new SpyNginMain();
             prefabs = [];
