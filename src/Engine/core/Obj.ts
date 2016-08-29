@@ -5,15 +5,11 @@ class Obj {
     public shouldDisable: boolean = false;
     public lastFrameEnabled: boolean = false;
 
-    protected _id: string = '';
+    private _id: string = '';
 
     public constructor() {
         this._id = this.generateId();
     }
-
-    // public getComponents(): Component[] {
-    //     return this.components;
-    // }
 
     public get instanceId(): string {
         return this._id;

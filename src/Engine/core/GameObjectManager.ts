@@ -6,6 +6,10 @@ class GameObjectManager {
         return this._items;
     }
 
+    public static get length(): number {
+        return this._items.length;
+    }
+
     public static clear() {
         this._items = [];
     }

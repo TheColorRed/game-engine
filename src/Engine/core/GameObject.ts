@@ -34,7 +34,6 @@ class GameObject extends Obj {
         comp.name = comp.constructor.name;
         comp.setGameObject(this);
         comp.setTransform(this._transform);
-        comp.behavior = comp;
         comp.isEnabled = this.isEnabled;
         this._components.push(comp);
         return comp;
@@ -68,13 +67,15 @@ class GameObject extends Obj {
 
     public sendMessage(message: string) {
         this._components.forEach(comp => {
+            // If the component is not enabled then don't do anything
+            if (!comp.isEnabled) { return; }
+
             // If the message is 'awake' and we have already awaken
             // If the message is 'start' and we have already started
             // Then we don't do anything
             if (
                 (comp.hasAwaken && message == 'awake') ||
-                (comp.hasStarted && message == 'start') ||
-                !comp.isEnabled
+                (comp.hasStarted && message == 'start')
             ) {
                 return;
             }
@@ -89,8 +90,8 @@ class GameObject extends Obj {
             }
 
             // Execute the message on this component
-            if (comp.isEnabled && typeof comp.behavior[message] == 'function') {
-                comp.behavior[message]();
+            if (typeof comp[message] == 'function') {
+                comp[message]();
             }
 
             // If the message is 'awake' set the awaken state
@@ -103,12 +104,12 @@ class GameObject extends Obj {
             }
             // If the message is 'onEnable' change the isEnabled state
             if (message == 'onEnable') {
-                comp.behavior.isEnabled = true;
+                comp.isEnabled = true;
                 this.isEnabled = true;
             }
             // If the message is 'onDisable' change the isEnabled state
             if (message == 'onDisable') {
-                comp.behavior.isEnabled = false;
+                comp.isEnabled = false;
                 this.isEnabled = false;
             }
         });

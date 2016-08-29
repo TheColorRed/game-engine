@@ -6,6 +6,10 @@ class EditorObjectManager {
         return this._items;
     }
 
+    public static get length(): number {
+        return this._items.length;
+    }
+
     public static clear(): void {
         this._items = [];
     }

@@ -1,8 +1,10 @@
 class Move extends Component {
 
     @range(0, 359)
+    @tooltip('The direction in which the object moves')
     public direction: number = 0;
 
+    @tooltip('The speed at which the object moves')
     public speed: number = 0;
 
     public update() {

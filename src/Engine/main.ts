@@ -37,8 +37,8 @@ class SpyNginMain {
         return (new Date()).getTime() * 1000000;
     }
 
-    protected clone(obj) {
-        if (null == obj || "object" != typeof obj) return obj;
+    public static clone(obj) {
+        if (obj == null || typeof obj != 'object') return obj;
         var copy = new obj.constructor();
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
@@ -132,18 +132,19 @@ class SpyNginMain {
     private render() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         let renderItems: GameObject[] = GameObjectManager.items;
-        renderItems.sort(function (a, b) {
-            let ar = a.getComponent(SpriteRenderer);
-            let br = b.getComponent(SpriteRenderer);
-            if (ar && br) {
-                if (ar.depth < br.depth)
-                    return -1;
-                if (ar.depth > br.depth)
-                    return 1;
-            }
-            return 0;
-        });
-        // console.log(renderItems)
+        if (renderItems.length > 1) {
+            renderItems.sort(function (a, b) {
+                let ar = a.getComponent(SpriteRenderer);
+                let br = b.getComponent(SpriteRenderer);
+                if (ar && br) {
+                    if (ar.depth < br.depth)
+                        return -1;
+                    if (ar.depth > br.depth)
+                        return 1;
+                }
+                return 0;
+            });
+        }
         renderItems.forEach(item => {
             item.components.forEach(comp => {
                 if (comp instanceof SpriteRenderer && comp.sprite.image) {

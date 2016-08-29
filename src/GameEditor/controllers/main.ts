@@ -29,7 +29,6 @@ window.addEventListener('load', () => {
     hierarchy = document.querySelector('section#hierarchy') as HTMLDivElement;
     hierarchy.addEventListener('mousedown', (event) => {
         if (event.button == 2) {
-            console.log('here')
             hierarchyMenu.menu.popup();
         }
     });
@@ -55,10 +54,10 @@ window.addEventListener('load', () => {
             pause.classList.remove('active');
             // Reset the editor
             EditorObjectManager.clear();
+            GameObjectManager.clear();
             prefabs.forEach(prefab => {
                 EditorObjectManager.addItem(Prefab.toObject(prefab));
             });
-            updateScene();
         }
         // Game has not started
         // Play was pressed
@@ -68,6 +67,8 @@ window.addEventListener('load', () => {
             EditorObjectManager.items.forEach(item => {
                 prefabs.push(Prefab.create(item));
             });
+            EditorObjectManager.clear();
+            GameObjectManager.clear();
             game.init(scene, prefabs);
             game.startGame();
             play.classList.add('active');
@@ -86,14 +87,7 @@ window.addEventListener('load', () => {
         }
     });
 });
-function clone(obj) {
-    if (null == obj || "object" != typeof obj) return obj;
-    var copy = new obj.constructor();
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
-    return copy;
-}
+
 ipcRenderer.on('rename-selected', () => {
     let text = selected.innerText
         .replace(/&/g, "&amp;")

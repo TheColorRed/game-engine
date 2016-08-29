@@ -64,7 +64,8 @@ class EditorGui {
 
     public static vector3Field(field: SerializedProperty): void {
         let comp: Vector3 = field.vector3Value;
-        this.draw(`<div class="property-name col-4">${field.displayName}</div>
+        let tooltip = getTooltip(field.object, field.name);
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
             <div class="input-group col-8">
                 <div><span>X</span><span><input type="text" class="input" value="${comp.x}"></span></div>
                 <div><span>Y</span><span><input type="text" class="input" value="${comp.y}"></span></div>
@@ -73,30 +74,41 @@ class EditorGui {
     }
 
     public static booleanField(field: SerializedProperty): void {
-        this.draw(`<div class="property-name col-4">${field.displayName}</div><div class="col-8"><input type="checkbox" class="input" ${(field.boolValue ? 'checked="checked"' : '')}></div>`);
+        let tooltip = getTooltip(field.object, field.name);
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
+        <div class="col-8">
+            <input type="checkbox" class="input" ${(field.boolValue ? 'checked="checked"' : '')}>
+        </div>`);
     }
 
     public static stringField(field: SerializedProperty): void {
-        this.draw(`<div class="property-name col-4">${field.displayName}</div><div class="col-8"><input data-name="${field.name}" data-type="${field.type}" type="text" class="input" value="${field.stringValue}"></div>`);
+        let tooltip = getTooltip(field.object, field.name);
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
+        <div class="col-8">
+            <input data-name="${field.name}" data-type="${field.type}" type="text" class="input" value="${field.stringValue}">
+        </div>`);
     }
 
     public static numberField(field: SerializedProperty): void {
         let range = getRange(field.object, field.name);
-        this.draw(`<div class="property-name col-4">${field.displayName}</div>
+        let tooltip = getTooltip(field.object, field.name);
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
         <div class="col-8">
             <input type="number" data-name="${field.name}" data-type="${field.type}" ${range[0] ? 'min="' + range[0] + '"' : ''} ${range[1] ? 'max="' + range[1] + '"' : ''} class="input" value="${field.numberValue}">
         </div>`);
     }
 
     public static colorField(field: SerializedProperty): void {
-        this.draw(`<div class="property-name col-4">${field.displayName}</div>
+        let tooltip = getTooltip(field.object, field.name);
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
         <div class="col-8">
             <div data-name="${field.name}" data-type="${field.type}" data-color="${field.colorValue.hex}" class="color-property col-8" style="background-color: #${field.colorValue.hex};"></div>
         </div>`);
     }
 
     public static spriteField(field: SerializedProperty): void {
-        this.draw(`<div class="property-name col-4">${field.displayName}</div>
+        let tooltip = getTooltip(field.object, field.name);
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
         <div class="col-8">
             <div data-name="${field.name}" data-type="${field.type}" class="input clickable sprite-property">
                 <img src="${field.value.path}" width="16px" height="16px" style="display: inline-block;margin-top: 2px;vertical-align: middle;margin-right: 5px;">
