@@ -5,14 +5,23 @@ enum Events {
 
 class EventSystem {
 
+    // Object events
     private createTriggered: boolean = false;
     private destroyTriggered: boolean = false;
-    private alarmTriggered: boolean = false;
-    private collisionTriggered: boolean = false;
+    // Keyboard events
     private keyboardTriggered: boolean = false;
-    private mouseTriggered: boolean = false;
     private keyPressTriggered: boolean = false;
     private keyReleaseTriggered: boolean = false;
+    // Misc. events
+    private alarmTriggered: boolean = false;
+    private collisionTriggered: boolean = false;
+    private mouseTriggered: boolean = false;
+
+    private canvas: HTMLCanvasElement;
+
+    public constructor() {
+        this.canvas = SpyNgin.canvas;
+    }
 
     public hasEventTriggered(event: Events) {
         switch (event) {

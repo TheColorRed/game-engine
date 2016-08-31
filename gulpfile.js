@@ -39,7 +39,7 @@ gulp.task('build', ['compile-game-editor'], function () {
                 rmdir('./build/SpyNgin/src', function (error) {
                     if (error) { throw error; }
                     // Build the asar package
-                    asar.createPackage('./build', './bin/GameEditor.asar', function (error) {
+                    asar.createPackage('./build', './bin/SpyNgin.asar', function (error) {
                         if (error) { throw error; }
                         console.log('done.');
                         resolve();
@@ -76,6 +76,9 @@ gulp.task('compile-editor', ['compile-engine'], function () {
         './src/Editor/core/EditorGui.ts',
         './src/Editor/core/EditorObjectManager.ts',
         './src/Editor/core/Editor.ts',
+        './src/Editor/core/Inspector.ts',
+        './src/Editor/core/Hierarchy.ts',
+        './src/Editor/core/Scene.ts',
         './src/Editor/utils/EditorRandom.ts',
         './src/Editor/decorators/*.ts',
         './src/Editor/inspectors/*.ts',
@@ -103,7 +106,7 @@ gulp.task('compile-engine', ['rm-build'], function () {
         './src/Engine/utils/Config.ts',
         './src/Engine/physics/Physics.ts',
         './src/Engine/components/*.ts',
-        './src/Engine/main.ts',
+        './src/Engine/SpyNgin.ts',
     ]).pipe(gulptsc(gameEngine)).pipe(gulp.dest('build'));
 });
 

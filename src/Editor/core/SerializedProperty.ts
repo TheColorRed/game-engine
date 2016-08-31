@@ -23,7 +23,7 @@ class SerializedProperty {
     }
 
     public get displayName(): string {
-        return this.toTitleCase(this._name.replace(/([A-Z])/g, ' $1').replace(/[-_]/g, ' ').replace(/\s\s+/, ' ').trim());
+        return Editor.getDisplayName(this._name);
     }
 
     public get type(): string {
@@ -58,7 +58,4 @@ class SerializedProperty {
         return this._property;
     }
 
-    private toTitleCase(str) {
-        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-    }
 }

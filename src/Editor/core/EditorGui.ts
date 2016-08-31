@@ -43,8 +43,9 @@ class EditorGui {
         for (let i = 0; i < inputs.length; i++) {
             let input = inputs[i];
             input.addEventListener('input', event => {
-                let gameObjectId = document.querySelector('#inspector').getAttribute('data-gameobject-id');
-                let gameObject = EditorObjectManager.getItemById(gameObjectId);
+                // let gameObjectId = document.querySelector('#inspector').getAttribute('data-gameobject-id');
+                // let gameObject = EditorObjectManager.getItemById(gameObjectId);
+                let gameObject: GameObject = Inspector.selectedGameObject;
                 let componentId = input.closest('.component').getAttribute('data-component-id');
                 gameObject.components.forEach(comp => {
                     if (comp.instanceId == componentId) {
@@ -126,11 +127,10 @@ class EditorGui {
         let options: string[] = [];
         for (let v in items) {
             if(parseInt(v) >= 0) { continue; }
-            options.push(`<option value="${items[v]}" ${items[v] == field.value ? 'selected="selected"' : ''}>${v}</option>`);
+            options.push(`<option value="${items[v]}" ${items[v] == field.value ? 'selected="selected"' : ''}>${Editor.getDisplayName(v)}</option>`);
         }
         this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
             <select data-name="${field.name}" data-type="${field.type}">${options.join('')}</select>
         `);
     }
-
 }

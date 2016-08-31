@@ -14,7 +14,7 @@ class Prefab {
                 if (['gameobject'].indexOf(prop) > -1) { continue; }
                 let prefabProp = new PrefabProperty;
                 prefabProp.name = c;
-                prefabProp.value = SpyNginMain.clone(comp[c]);
+                prefabProp.value = SpyNgin.clone(comp[c]);
                 prefabComp.properties.push(prefabProp);
             }
             prefab.components.push(prefabComp);
@@ -42,7 +42,7 @@ class Prefab {
                 //     newComp[prop.name].z = prop.value.z || 0;
                 // }
                 else {
-                    newComp[prop.name] = SpyNginMain.clone(prop.value);
+                    newComp[prop.name] = SpyNgin.clone(prop.value);
                 }
             });
         });

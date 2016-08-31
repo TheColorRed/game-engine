@@ -26,4 +26,11 @@ class Editor {
         // Override this in an editor
     }
 
+    public static getDisplayName(value: string): string {
+        return this.toTitleCase(value.replace(/([A-Z])/g, ' $1').replace(/[-_]/g, ' ').replace(/\s\s+/, ' ').trim());
+    }
+
+    private static toTitleCase(str) {
+        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    }
 }

@@ -41,7 +41,7 @@ class EditorObjectManager {
         }
     }
 
-    private static objectManagerChanged(item) {
+    private static objectManagerChanged(item: GameObject | GameObject[]) {
         window.dispatchEvent(new CustomEvent('onObjectManagerChanged', { detail: item }));
     }
 }

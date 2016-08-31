@@ -1,4 +1,4 @@
-class SpyNginMain {
+class SpyNgin {
 
     private lastLoopTime = this.getNanoSeconds;
     private targetFps = 120;
@@ -8,16 +8,22 @@ class SpyNginMain {
     private startTime = 0;
     private _isPlaying: boolean = false;
 
-    private canvas: HTMLCanvasElement;
+    private static _canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
 
     public init(canvas: HTMLCanvasElement, prefabs: Prefab[]){
-        this.canvas = canvas;
-        this.context = this.canvas.getContext('2d');
+        SpyNgin._canvas = canvas;
+        this.context = SpyNgin._canvas.getContext('2d');
         GameObjectManager.clear();
         prefabs.forEach(prefab => {
             Prefab.toObject(prefab);
         });
+        SpyNginEvents.addEvent('keydown', (event) => {
+            this.keyDown();
+        }, true);
+        SpyNginEvents.addEvent('keyup', (event) => {
+            this.keyUp();
+        }, true);
     }
 
     public startGame() {
@@ -27,6 +33,11 @@ class SpyNginMain {
 
     public stopGame() {
         this._isPlaying = false;
+        SpyNginEvents.removeAllEvents();
+    }
+
+    public static get canvas(): HTMLCanvasElement {
+        return SpyNgin._canvas;
     }
 
     public get isPlaying(): boolean {
@@ -104,6 +115,18 @@ class SpyNginMain {
         });
     }
 
+    private keyDown(): void {
+        GameObjectManager.items.forEach(item => {
+            item.sendMessage('keydown');
+        });
+    }
+
+    private keyUp(): void {
+        GameObjectManager.items.forEach(item => {
+            item.sendMessage('keyup');
+        });
+    }
+
     private lateUpdate(): void {
         GameObjectManager.items.forEach(item => {
             item.sendMessage('lateUpdate');
@@ -130,7 +153,7 @@ class SpyNginMain {
     }
 
     private render() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.clearRect(0, 0, SpyNgin._canvas.width, SpyNgin._canvas.height);
         let renderItems: GameObject[] = GameObjectManager.items;
         if (renderItems.length > 1) {
             renderItems.sort(function (a, b) {
@@ -154,4 +177,42 @@ class SpyNginMain {
         });
     }
 
+}
+
+class SpyNginEvents {
+
+    private static evts: SpyNginEvent[] = [];
+
+    public static addEvent(type: string, listener: EventListener, useCapture?: boolean) {
+        let evt = new SpyNginEvent;
+        evt.type = type;
+        evt.listener = listener;
+        evt.useCapture = useCapture;
+        this.evts.push(evt);
+        window.document.addEventListener(evt.type, evt.listener, evt.useCapture);
+    }
+
+    public static removeEvent(type: string) {
+        this.evts.forEach(evt => {
+            if (evt.type == type) {
+                let index = this.evts.indexOf(evt);
+                window.document.removeEventListener(evt.type, evt.listener, evt.useCapture);
+                this.evts.splice(index, 1);
+            }
+        });
+    }
+
+    public static removeAllEvents() {
+        this.evts.forEach(evt => {
+            window.document.removeEventListener(evt.type, evt.listener, evt.useCapture);
+        });
+        this.evts = [];
+    }
+
+}
+
+class SpyNginEvent {
+    public type: string = '';
+    public listener: EventListener = null;
+    public useCapture: boolean = false;
 }
