@@ -24,24 +24,27 @@ var gameEditor = {
     experimentalDecorators: true
 };
 
-var utils = {
-    out: 'utils.js',
-    module: 'system',
-    target: 'es6',
-    removeComments: true,
-    declaration: true,
-    experimentalDecorators: true
-};
-
 gulp.task('build', ['compile-game-editor'], function () {
     return new Promise(resolve => {
-        ncp('./src/GameEditor/resources', './build/Editor/resources', function (error) {
+        // Move the built editor files to the proper location
+        // For some reason they get placed in a source folder without the references file...
+        ncp('./build/SpyNgin/src/GameEditor', './build/SpyNgin', function (error) {
             if (error) { throw error; }
-            fs.createReadStream('./node_modules/reflect-metadata/Reflect.js').pipe(fs.createWriteStream('./build/reflect.js'));
-            asar.createPackage('./build', './bin/GameEditor.asar', function (error) {
+            // Move the the resources that are not TypeScript files
+            ncp('./src/GameEditor/resources', './build/SpyNgin/resources', function (error) {
                 if (error) { throw error; }
-                console.log('done.');
-                resolve();
+                // Copy the Reflect library
+                fs.createReadStream('./node_modules/reflect-metadata/Reflect.js').pipe(fs.createWriteStream('./build/reflect.js'));
+                // Remove the src (the one copied from above)
+                rmdir('./build/SpyNgin/src', function (error) {
+                    if (error) { throw error; }
+                    // Build the asar package
+                    asar.createPackage('./build', './bin/GameEditor.asar', function (error) {
+                        if (error) { throw error; }
+                        console.log('done.');
+                        resolve();
+                    });
+                });
             });
         });
     });
@@ -50,19 +53,24 @@ gulp.task('build', ['compile-game-editor'], function () {
 gulp.task('compile-game-editor', ['compile-editor'], function () {
      return gulp.src([
         // Editor files
-        './src/GameEditor/refs.ts',
+        // './src/GameEditor/refs.ts',
+        './build/gameEditor.d.ts',
+        './build/gameEngine.d.ts',
+        './typings/game-engine/game-engine.d.ts',
         './src/GameEditor/**/*.ts',
      ]).pipe(gulptsc({
         module: 'commonjs',
         target: 'es6',
         removeComments: true,
-        allowUnreachableCode: true
-    })).pipe(gulp.dest('build/Editor/'));
+        experimentalDecorators: true
+    })).pipe(gulp.dest('build/SpyNgin/'));
 });
 
 gulp.task('compile-editor', ['compile-engine'], function () {
     return gulp.src([
-        './src/Editor/refs.ts',
+        // './src/Editor/refs.ts',
+        './build/gameEngine.d.ts',
+        './typings/game-engine/game-engine.d.ts',
         './src/Editor/core/SerializedObject.ts',
         './src/Editor/core/SerializedProperty.ts',
         './src/Editor/core/EditorGui.ts',
@@ -85,15 +93,16 @@ gulp.task('compile-engine', ['rm-build'], function () {
         './src/Engine/core/GameObjectManager.ts',
         './src/Engine/core/Prefab.ts',
         './src/Engine/decorators/*.ts',
-        './src/Engine/components/*.ts',
         './src/Engine/util/Time.ts',
         './src/Engine/util/Debug.ts',
         './src/Engine/util/Sprite.ts',
         './src/Engine/util/color/Color.ts',
         './src/Engine/util/vector/Vector2.ts',
         './src/Engine/util/vector/Vector3.ts',
+        './src/Engine/util/eventSystem/*.ts',
         './src/Engine/utils/Config.ts',
         './src/Engine/physics/Physics.ts',
+        './src/Engine/components/*.ts',
         './src/Engine/main.ts',
     ]).pipe(gulptsc(gameEngine)).pipe(gulp.dest('build'));
 });

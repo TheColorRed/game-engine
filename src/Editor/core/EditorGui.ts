@@ -17,26 +17,29 @@ class EditorGui {
     }
 
     public static propertyField(field: SerializedProperty): void {
-        let fieldToDraw: string = '';
-        switch (field.type.toLowerCase()) {
-            case 'boolean':
-                return this.booleanField(field);
-            case 'string':
-                return this.stringField(field);
-            case 'number':
-                return this.numberField(field);
+        if (getEnum(field.object, field.name)) {
+            return this.enumField(field);
+        } else {
+            switch (field.type.toLowerCase()) {
+                case 'boolean':
+                    return this.booleanField(field);
+                case 'string':
+                    return this.stringField(field);
+                case 'number':
+                    return this.numberField(field);
 
-            case 'vector3':
-                return this.vector3Field(field);
-            case 'color':
-                return this.colorField(field);
-            case 'sprite':
-                return this.spriteField(field);
+                case 'vector3':
+                    return this.vector3Field(field);
+                case 'color':
+                    return this.colorField(field);
+                case 'sprite':
+                    return this.spriteField(field);
+            }
         }
     }
 
     public static applyModifiedValues(): void {
-        let inputs = document.querySelectorAll('#inspector input') as NodeListOf<HTMLInputElement>;
+        let inputs = document.querySelectorAll('#inspector input, #inspector select') as NodeListOf<HTMLInputElement>;
         for (let i = 0; i < inputs.length; i++) {
             let input = inputs[i];
             input.addEventListener('input', event => {
@@ -115,6 +118,19 @@ class EditorGui {
                 <span style="display: inline-block; vertical-align: middle;">${field.value.name || 'None'}</span>
             </div>
         </div>`);
+    }
+
+    public static enumField(field: SerializedProperty): void {
+        let items = getEnum(field.object, field.name);
+        let tooltip = getTooltip(field.object, field.name);
+        let options: string[] = [];
+        for (let v in items) {
+            if(parseInt(v) >= 0) { continue; }
+            options.push(`<option value="${items[v]}" ${items[v] == field.value ? 'selected="selected"' : ''}>${v}</option>`);
+        }
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
+            <select data-name="${field.name}" data-type="${field.type}">${options.join('')}</select>
+        `);
     }
 
 }

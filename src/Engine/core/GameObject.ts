@@ -96,6 +96,7 @@ class GameObject extends Obj {
 
             // If the message is 'awake' set the awaken state
             if (message == 'awake') {
+                comp['createdEvent']();
                 comp.hasAwaken = true;
             }
             // If the message is 'start' set the started state

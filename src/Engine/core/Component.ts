@@ -13,6 +13,8 @@ class Component extends Obj {
     public hasStarted: boolean = false;
     public hasAwaken: boolean = false;
 
+    protected eventSystem: EventSystem = new EventSystem;
+
     public constructor() {
         super();
     }
@@ -23,6 +25,10 @@ class Component extends Obj {
 
     public setTransform(transform: Transform) {
         this.transform = transform;
+    }
+
+    private createdEvent() {
+        this.eventSystem['created']();
     }
 
 }

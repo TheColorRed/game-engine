@@ -462,6 +462,13 @@ function drawInspector(gameObject: GameObject) {
             }));
         });
     }
+    let dropdowns: NodeListOf<HTMLSelectElement> = document.querySelectorAll('#inspector select') as NodeListOf<HTMLSelectElement>;
+    for (var i = 0; i < dropdowns.length; i++) {
+        dropdowns[i].addEventListener('change', (event) => {
+            EditorGui.applyModifiedValues();
+            drawInspector(gameObject);
+        });
+    }
     updateScene();
 }
 
