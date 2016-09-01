@@ -1,8 +1,8 @@
 class SerializedObject {
 
-    protected object: Component;
+    protected object: Obj;
 
-    public constructor(object: Component) {
+    public constructor(object: Obj) {
         this.object = object;
     }
 

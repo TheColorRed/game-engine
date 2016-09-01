@@ -1,8 +1,5 @@
 class Move extends Component {
 
-    @setEnum(Events)
-    public event: Events = Events.None;
-
     @range(0, 360)
     @steps(0, 45, 90, 135, 180, 225, 270, 315, 360)
     @tooltip('The direction in which the object moves')
@@ -12,7 +9,7 @@ class Move extends Component {
     public speed: number = 0;
 
     public update() {
-        if (this.eventSystem.hasEventTriggered(this.event)) {
+        if (this.eventSystem.hasEventTriggered(this.eventSystem.event)) {
             this.updateTransform();
         }
     }

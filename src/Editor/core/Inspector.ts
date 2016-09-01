@@ -42,18 +42,6 @@ class Inspector {
             EditorGui.applyModifiedValues();
         });
 
-        let numberInputs = document.querySelectorAll('input[min], input[max]') as NodeListOf<HTMLInputElement>;
-        for (let i = 0; i < numberInputs.length; i++) {
-            let input = numberInputs[i];
-            input.addEventListener('blur', (event) => { this.validateRangeInput(input); });
-            input.addEventListener('keypress', (event) => {
-                if (event.keyCode == 13) {
-                    this.validateRangeInput(input);
-                }
-            });
-        }
-
-
         let addComponent = document.createElement('div') as HTMLDivElement;
         addComponent.classList.add('component');
         addComponent.innerHTML = `<div class="row">
@@ -151,6 +139,7 @@ class Inspector {
                 }));
             });
         }
+
         let dropdowns: NodeListOf<HTMLSelectElement> = document.querySelectorAll('#inspector select') as NodeListOf<HTMLSelectElement>;
         for (var i = 0; i < dropdowns.length; i++) {
             dropdowns[i].addEventListener('change', (event) => {
@@ -159,6 +148,16 @@ class Inspector {
             });
         }
 
+        let numberInputs = document.querySelectorAll('input[min], input[max]') as NodeListOf<HTMLInputElement>;
+        for (let i = 0; i < numberInputs.length; i++) {
+            let input = numberInputs[i];
+            input.addEventListener('blur', (event) => { this.validateRangeInput(input); });
+            input.addEventListener('keypress', (event) => {
+                if (event.keyCode == 13) {
+                    this.validateRangeInput(input);
+                }
+            });
+        }
         let ranges: NodeListOf<HTMLDivElement> = document.querySelectorAll('#inspector .number-property input') as NodeListOf<HTMLDivElement>;
         for (var i = 0; i < ranges.length; i++) {
             let range = ranges[i];

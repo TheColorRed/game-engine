@@ -34,6 +34,8 @@ class EditorGui {
                     return this.colorField(field);
                 case 'sprite':
                     return this.spriteField(field);
+                case 'eventsystem':
+                    return this.eventSystem(field);
             }
         }
     }
@@ -45,11 +47,12 @@ class EditorGui {
             input.addEventListener('input', event => {
                 let gameObject: GameObject = Inspector.selectedGameObject;
                 let componentId = input.closest('.component').getAttribute('data-component-id');
+                let inputName = input.getAttribute('data-name');
                 gameObject.components.forEach(comp => {
                     if (comp.instanceId == componentId) {
                         let properties: string[] = Object.getOwnPropertyNames(comp);
                         properties.forEach(property => {
-                            if (property == input.getAttribute('data-name')) {
+                            if (property == inputName) {
                                 let type = input.getAttribute('data-type').toLowerCase();
                                 if (type == 'number') {
                                     let min = parseFloat(input.getAttribute('min'));
@@ -62,6 +65,12 @@ class EditorGui {
                                 } else {
                                     comp[property] = input.value;
                                 }
+                            } else if (comp[property] instanceof EventSystem) {
+                                Object.getOwnPropertyNames(comp[property]).forEach(prop => {
+                                    if (inputName == prop) {
+                                        comp[property][prop] = input.value;
+                                    }
+                                });
                             }
                         });
                     }
@@ -149,5 +158,18 @@ class EditorGui {
                 <select class="input" data-name="${field.name}" data-type="${field.type}">${options.join('')}</select>
             </div>
         `);
+    }
+
+    public static eventSystem(field: SerializedProperty): void {
+        let system = field.eventSystemValue;
+        let obj: SerializedObject = Editor.serialize(field.eventSystemValue);
+
+        let event: SerializedProperty = obj.findProperty('event');
+        let input: SerializedProperty = obj.findProperty('input');
+
+        EditorGui.propertyField(event);
+        if (event.value == Events.Keyboard) {
+            EditorGui.propertyField(input);
+        }
     }
 }

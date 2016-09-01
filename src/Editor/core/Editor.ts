@@ -37,4 +37,8 @@ class Editor {
     public static generateId(): string {
         return '_' + Math.random().toString(36).substr(2, 9);
     }
+
+    public static serialize(value): SerializedObject {
+        return new SerializedObject(value);
+    }
 }

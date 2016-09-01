@@ -19,6 +19,11 @@ class EventSystem {
 
     private canvas: HTMLCanvasElement;
 
+    @setEnum(Events)
+    public event: Events = Events.None;
+
+    public input: string = '';
+
     public constructor() {
         this.canvas = SpyNgin.canvas;
     }

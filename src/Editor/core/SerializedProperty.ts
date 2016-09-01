@@ -2,10 +2,10 @@ class SerializedProperty {
 
     protected _name: string;
     protected _property;
-    protected _object: Component;
+    protected _object: Obj;
     protected propertyId: string;
 
-    public constructor(object: Component, name: string, property: any) {
+    public constructor(object: Obj, name: string, property: any) {
         this._name = name;
         this._property = property;
         this._object = object;
@@ -58,6 +58,10 @@ class SerializedProperty {
 
     public get vector2Value(): Vector2 {
         return this._property as Vector2;
+    }
+
+    public get eventSystemValue(): EventSystem {
+        return this._property as EventSystem;
     }
 
     public get value(): any {
