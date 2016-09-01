@@ -35,13 +35,7 @@ class Prefab {
                     return;
                 } else if (prop.value instanceof Sprite) {
                     newComp[prop.name] = Sprite.create(prop.value.path);
-                }
-                // else if (prop.value instanceof Vector3 || prop.value instanceof Vector2) {
-                //     newComp[prop.name].x = prop.value.x;
-                //     newComp[prop.name].y = prop.value.y;
-                //     newComp[prop.name].z = prop.value.z || 0;
-                // }
-                else {
+                } else {
                     newComp[prop.name] = SpyNgin.clone(prop.value);
                 }
             });

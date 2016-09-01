@@ -40,6 +40,7 @@ window.addEventListener('load', () => {
     pause = document.querySelector('a#pause') as HTMLAnchorElement;
     play.addEventListener('click', (event) => {
         event.preventDefault();
+        play.blur();
         // Game has started
         // Stop was pressed
         if (game instanceof SpyNgin) {
@@ -51,7 +52,8 @@ window.addEventListener('load', () => {
             EditorObjectManager.clear();
             GameObjectManager.clear();
             prefabs.forEach(prefab => {
-                EditorObjectManager.addItem(Prefab.toObject(prefab));
+                let obj = Prefab.toObject(prefab)
+                EditorObjectManager.addItem(obj);
             });
         }
         // Game has not started
@@ -71,6 +73,7 @@ window.addEventListener('load', () => {
     });
     pause.addEventListener('click', (event) => {
         event.preventDefault();
+        pause.blur();
         if (game instanceof SpyNgin) {
             if (game.isPlaying) {
                 game.stopGame();

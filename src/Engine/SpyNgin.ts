@@ -11,6 +11,8 @@ class SpyNgin {
     private static _canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
 
+    private gameLoopTick = null;
+
     public init(canvas: HTMLCanvasElement, prefabs: Prefab[]){
         SpyNgin._canvas = canvas;
         this.context = SpyNgin._canvas.getContext('2d');
@@ -34,6 +36,7 @@ class SpyNgin {
     public stopGame() {
         this._isPlaying = false;
         SpyNginEvents.removeAllEvents();
+        clearInterval(this.gameLoopTick);
     }
 
     public static get canvas(): HTMLCanvasElement {
@@ -84,8 +87,8 @@ class SpyNgin {
         this.render();
 
         var next = (this.lastLoopTime - nanoSeconds + this.optimalTime) / 1000000;
-        if(this.isPlaying){
-            setTimeout(this.tick.bind(this), next);
+        if (this.isPlaying) {
+            this.gameLoopTick = setTimeout(this.tick.bind(this), next);
         }
     }
 

@@ -33,4 +33,8 @@ class Editor {
     private static toTitleCase(str) {
         return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     }
+
+    public static generateId(): string {
+        return '_' + Math.random().toString(36).substr(2, 9);
+    }
 }

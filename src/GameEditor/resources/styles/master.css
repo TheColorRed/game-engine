@@ -31,6 +31,10 @@ input[type=text], input[type=number], .input{
     border-right: solid 1px #7f7f7f;
 }
 
+.input-range {
+    width: 100%;
+}
+
 .clickable {
     cursor: pointer;
 }

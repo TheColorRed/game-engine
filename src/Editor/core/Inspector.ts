@@ -158,6 +158,26 @@ class Inspector {
                 this.draw();
             });
         }
+
+        let ranges: NodeListOf<HTMLDivElement> = document.querySelectorAll('#inspector .number-property input') as NodeListOf<HTMLDivElement>;
+        for (var i = 0; i < ranges.length; i++) {
+            let range = ranges[i];
+            range.addEventListener('input', function(event){
+                let target = event.currentTarget as HTMLInputElement;
+                let id = target.getAttribute('data-property-id');
+                if (target.getAttribute('type') == 'range') {
+                    let textinput = document.querySelector(`#inspector .number-property input[type=number][data-property-id=${id}]`) as HTMLInputElement;
+                    textinput.value = target.value || '0';
+                } else {
+                    let rangeinput = document.querySelector(`#inspector .number-property input[type=range][data-property-id=${id}]`) as HTMLInputElement;
+                    if (rangeinput) {
+                        rangeinput.value = target.value || '0';
+                    }
+                }
+                EditorGui.applyModifiedValues();
+            });
+        }
+
         this.updateScene();
     }
 

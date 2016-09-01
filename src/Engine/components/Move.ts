@@ -3,7 +3,8 @@ class Move extends Component {
     @setEnum(Events)
     public event: Events = Events.None;
 
-    @range(0, 359)
+    @range(0, 360)
+    @steps(0, 45, 90, 135, 180, 225, 270, 315, 360)
     @tooltip('The direction in which the object moves')
     public direction: number = 0;
 

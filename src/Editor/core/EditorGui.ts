@@ -43,8 +43,6 @@ class EditorGui {
         for (let i = 0; i < inputs.length; i++) {
             let input = inputs[i];
             input.addEventListener('input', event => {
-                // let gameObjectId = document.querySelector('#inspector').getAttribute('data-gameobject-id');
-                // let gameObject = EditorObjectManager.getItemById(gameObjectId);
                 let gameObject: GameObject = Inspector.selectedGameObject;
                 let componentId = input.closest('.component').getAttribute('data-component-id');
                 gameObject.components.forEach(comp => {
@@ -54,7 +52,13 @@ class EditorGui {
                             if (property == input.getAttribute('data-name')) {
                                 let type = input.getAttribute('data-type').toLowerCase();
                                 if (type == 'number') {
-                                    comp[property] = parseFloat(input.value);
+                                    let min = parseFloat(input.getAttribute('min'));
+                                    let max = parseFloat(input.getAttribute('max'));
+                                    let value = parseFloat(input.value);
+                                    if (min != NaN) { value = value < min ? min : value; }
+                                    if (max != NaN) { value = value > max ? max : value; }
+                                    console.log(property, value, min, max)
+                                    comp[property] = value;
                                 } else {
                                     comp[property] = input.value;
                                 }
@@ -95,11 +99,22 @@ class EditorGui {
 
     public static numberField(field: SerializedProperty): void {
         let range = getRange(field.object, field.name);
+        let steps = getSteps(field.object, field.name);
         let tooltip = getTooltip(field.object, field.name);
-        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
-        <div class="col-8">
-            <input type="number" data-name="${field.name}" data-type="${field.type}" ${range[0] ? 'min="' + range[0] + '"' : ''} ${range[1] ? 'max="' + range[1] + '"' : ''} class="input" value="${field.numberValue}">
-        </div>`);
+        let fieldExtra = '';
+        let input = `<input type="number" data-property-id="${field.id}" data-name="${field.name}" data-type="${field.type}" ${range[0] ? 'min="' + range[0] + '"' : ''} ${range[1] ? 'max="' + range[1] + '"' : ''} class="input" value="${field.numberValue}">`;
+        if (range[0] && range[1]) {
+            fieldExtra = `<div class="col-6"><input class="input-range" ${steps ? `list="steplist-${field.id}"` : ''} data-property-id="${field.id}" data-name="${field.name}" data-type="${field.type}" value="${field.numberValue}" type="range" min="${range[0]}" max="${range[1]}"></div>`;
+            fieldExtra += `<div class="col-2">${input}</div>`;
+            if (steps) {
+                fieldExtra += `<datalist id="steplist-${field.id}">`;
+                fieldExtra += '<option>' + steps.join('</option><option>') + '</option>';
+                fieldExtra += `</datalist>`;
+            }
+        } else {
+            fieldExtra = `<div class="col-8">${input}</div>`;
+        }
+        this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div><div class="number-property">${fieldExtra}</div>`);
     }
 
     public static colorField(field: SerializedProperty): void {
@@ -130,7 +145,9 @@ class EditorGui {
             options.push(`<option value="${items[v]}" ${items[v] == field.value ? 'selected="selected"' : ''}>${Editor.getDisplayName(v)}</option>`);
         }
         this.draw(`<div class="property-name col-4" title="${tooltip}">${field.displayName}</div>
-            <select data-name="${field.name}" data-type="${field.type}">${options.join('')}</select>
+            <div class="col-8">
+                <select class="input" data-name="${field.name}" data-type="${field.type}">${options.join('')}</select>
+            </div>
         `);
     }
 }
