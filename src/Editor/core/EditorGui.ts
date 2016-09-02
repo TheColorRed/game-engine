@@ -60,7 +60,6 @@ class EditorGui {
                                     let value = parseFloat(input.value);
                                     if (min != NaN) { value = value < min ? min : value; }
                                     if (max != NaN) { value = value > max ? max : value; }
-                                    console.log(property, value, min, max)
                                     comp[property] = value;
                                 } else {
                                     comp[property] = input.value;
@@ -68,7 +67,11 @@ class EditorGui {
                             } else if (comp[property] instanceof EventSystem) {
                                 Object.getOwnPropertyNames(comp[property]).forEach(prop => {
                                     if (inputName == prop) {
-                                        comp[property][prop] = input.value;
+                                        if (prop == 'event') {
+                                            comp[property][prop] = parseInt(input.value);
+                                        } else {
+                                            comp[property][prop] = input.value;
+                                        }
                                     }
                                 });
                             }
@@ -165,11 +168,17 @@ class EditorGui {
         let obj: SerializedObject = Editor.serialize(field.eventSystemValue);
 
         let event: SerializedProperty = obj.findProperty('event');
-        let input: SerializedProperty = obj.findProperty('input');
 
         EditorGui.propertyField(event);
-        if (event.value == Events.Keyboard) {
-            EditorGui.propertyField(input);
+        // Keyboard events
+        if (event.value == Events.Keyboard || event.value == Events.KeyPress || event.value == Events.KeyRelease) {
+            let key: SerializedProperty = obj.findProperty('key');
+            EditorGui.propertyField(key);
+        }
+        // Mouse Events
+        else if (event.value == Events.MousePress || event.value == Events.MouseRelease) {
+            let mouseButton: SerializedProperty = obj.findProperty('mouseButton');
+            EditorGui.propertyField(mouseButton);
         }
     }
 }

@@ -27,18 +27,4 @@ class Component extends Obj {
         this.transform = transform;
     }
 
-    private createdEvent() {
-        this.eventSystem['created']();
-    }
-
-    private keydown() {
-        this.eventSystem['keyboardTriggered'] = true;
-        this.eventSystem['keyPressTriggered'] = true;
-    }
-
-    private keyup() {
-        this.eventSystem['keyboardTriggered'] = false;
-        this.eventSystem['keyPressTriggered'] = false;
-    }
-
 }

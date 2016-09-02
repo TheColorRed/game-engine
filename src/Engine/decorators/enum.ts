@@ -2,10 +2,7 @@
 
 function setEnum<T>(target: T): any {
     return (t, propertyKeys) => {
-    // return (constructor) => {
-        // console.log(target, t, propertyKeys)
         Reflect.defineMetadata('enum', target, t, propertyKeys);
-        // Reflect.metadata('enum', true);
     };
 }
 

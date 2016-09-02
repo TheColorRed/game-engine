@@ -9,7 +9,7 @@ class Move extends Component {
     public speed: number = 0;
 
     public update() {
-        if (this.eventSystem.hasEventTriggered(this.eventSystem.event)) {
+        if (this.eventSystem.hasEventTriggered()) {
             this.updateTransform();
         }
     }

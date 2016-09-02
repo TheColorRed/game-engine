@@ -65,7 +65,7 @@ class GameObject extends Obj {
         return null;
     }
 
-    public sendMessage(message: string) {
+    public sendMessage(message: string, options?: any) {
         this._components.forEach(comp => {
             // If the component is not enabled then don't do anything
             if (!comp.isEnabled) { return; }
@@ -89,6 +89,13 @@ class GameObject extends Obj {
                 return;
             }
 
+            if (message == 'keydown') {
+                comp['eventSystem']['keyDown'](options.key);
+            }
+            if (message == 'keyup') {
+                comp['eventSystem']['keyUp'](options.key);
+            }
+
             // Execute the message on this component
             if (typeof comp[message] == 'function') {
                 comp[message]();
@@ -96,7 +103,7 @@ class GameObject extends Obj {
 
             // If the message is 'awake' set the awaken state
             if (message == 'awake') {
-                comp['createdEvent']();
+                comp['eventSystem']['created']();
                 comp.hasAwaken = true;
             }
             // If the message is 'start' set the started state

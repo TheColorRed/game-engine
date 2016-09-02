@@ -96,7 +96,6 @@ function showFiles(filesToShow: string[], query: string = '') {
     let c = 0;
     filesToShow.forEach(file => {
         let parsed = path.parse(file);
-        console.log(file)
         let regexp = new RegExp(query, 'ig');
         if (query.length == 0 || regexp.test(parsed.name)) {
             let item = document.createElement('div') as HTMLDivElement;

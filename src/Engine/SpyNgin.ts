@@ -20,12 +20,7 @@ class SpyNgin {
         prefabs.forEach(prefab => {
             Prefab.toObject(prefab);
         });
-        SpyNginEvents.addEvent('keydown', (event) => {
-            this.keyDown();
-        }, true);
-        SpyNginEvents.addEvent('keyup', (event) => {
-            this.keyUp();
-        }, true);
+        Input.init();
     }
 
     public startGame() {
@@ -118,18 +113,6 @@ class SpyNgin {
         });
     }
 
-    private keyDown(): void {
-        GameObjectManager.items.forEach(item => {
-            item.sendMessage('keydown');
-        });
-    }
-
-    private keyUp(): void {
-        GameObjectManager.items.forEach(item => {
-            item.sendMessage('keyup');
-        });
-    }
-
     private lateUpdate(): void {
         GameObjectManager.items.forEach(item => {
             item.sendMessage('lateUpdate');
@@ -152,6 +135,12 @@ class SpyNgin {
                     comp.behavior.isEnabled = false;
                 }
             });
+        });
+        Input['addTick']();
+        Input.pressedKeys.forEach(key => {
+            if (key.tickCount > 0) {
+                key.pressed = false;
+            }
         });
     }
 
