@@ -35,6 +35,7 @@ class EventSystem {
         if (!event) { event = this.event; }
         switch (event) {
             case Events.Create:
+                console.log(this.createTriggered)
                 return this.createTriggered;
             case Events.Destroy:
                 return this.destroyTriggered;

@@ -136,12 +136,7 @@ class SpyNgin {
                 }
             });
         });
-        Input['addTick']();
-        Input.pressedKeys.forEach(key => {
-            if (key.tickCount > 0) {
-                key.pressed = false;
-            }
-        });
+        Input['endTick']();
     }
 
     private render() {

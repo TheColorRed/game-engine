@@ -9,11 +9,10 @@ class Component extends Obj {
 
     public gameObject: GameObject;
     public transform: Transform;
+    public eventSystem: EventSystem = new EventSystem;
 
     public hasStarted: boolean = false;
     public hasAwaken: boolean = false;
-
-    protected eventSystem: EventSystem = new EventSystem;
 
     public constructor() {
         super();

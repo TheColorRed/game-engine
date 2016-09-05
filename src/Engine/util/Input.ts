@@ -74,6 +74,15 @@ class Input {
         }
     }
 
+    private static endTick() {
+        this.addTick();
+        this.pressedKeys.forEach(key => {
+            if (key.tickCount > 0) {
+                key.pressed = false;
+            }
+        });
+    }
+
     private static addTick() {
         this.keys.forEach(key => {
             if (key.status == KeyStatus.Pressed) {

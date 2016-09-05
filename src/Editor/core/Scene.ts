@@ -24,7 +24,8 @@ class Scene {
                 }
                 if (comp instanceof SpriteRenderer && comp.sprite.image) {
                     comp.sprite.image.onload = function () {
-                        $this.context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);
+                        let c = comp as SpriteRenderer;
+                        $this.context.drawImage(c.sprite.image, comp.transform.position.x, comp.transform.position.y);
                     }
                     if (comp.sprite.image) {
                         $this.context.drawImage(comp.sprite.image, comp.transform.position.x, comp.transform.position.y);

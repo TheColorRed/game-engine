@@ -3,12 +3,18 @@ class GameObject extends Obj {
     public tag: string = '';
     private _transform: Transform;
     private _components: Component[] = [];
+    private _eventSystem: EventSystem;
 
     public constructor(name: string = 'GameObject') {
         super();
         this.name = name;
         this._transform = this.addComponent(Transform);
+        this._eventSystem = new EventSystem;
         GameObjectManager.add(this);
+    }
+
+    public get eventSystem(): EventSystem {
+        return this._eventSystem;
     }
 
     public get transform(): Transform {
@@ -103,7 +109,7 @@ class GameObject extends Obj {
 
             // If the message is 'awake' set the awaken state
             if (message == 'awake') {
-                comp['eventSystem']['created']();
+                comp.eventSystem['created']();
                 comp.hasAwaken = true;
             }
             // If the message is 'start' set the started state

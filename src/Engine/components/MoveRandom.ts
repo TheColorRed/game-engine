@@ -1,15 +1,21 @@
-class Move extends Component {
-
-    @range(0, 360)
-    @steps(0, 45, 90, 135, 180, 225, 270, 315, 360)
-    @tooltip('The direction in which the object moves')
-    public direction: number = 0;
+class MoveRandom extends Component {
 
     @tooltip('The speed at which the object moves')
     public speed: number = 0;
 
+    private eventTriggered: boolean = false;
+
+    private direction: number = 0;
+
+    public awake() {
+        this.direction = Math.round(Math.random() * 360);
+    }
+
     public update() {
-        if (this.eventSystem.hasEventTriggered()){
+        if (!this.eventTriggered) {
+            this.eventTriggered = this.eventSystem.hasEventTriggered();
+        }
+        if (this.eventTriggered) {
             this.updateTransform();
         }
     }

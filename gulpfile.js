@@ -7,6 +7,7 @@ var rmdir   = require('rimraf');
 var fs      = require('fs');
 
 var gameEngine = {
+    tscPath: './node_modules/typescript/lib/tsc.js',
     out: 'gameEngine.js',
     module: 'system',
     target: 'es6',
@@ -16,6 +17,7 @@ var gameEngine = {
 };
 
 var gameEditor = {
+    tscPath: './node_modules/typescript/lib/tsc.js',
     out: 'gameEditor.js',
     module: 'system',
     target: 'es6',
@@ -53,12 +55,11 @@ gulp.task('build', ['compile-game-editor'], function () {
 gulp.task('compile-game-editor', ['compile-editor'], function () {
      return gulp.src([
         // Editor files
-        // './src/GameEditor/refs.ts',
         './build/gameEditor.d.ts',
         './build/gameEngine.d.ts',
-        './typings/game-engine/game-engine.d.ts',
         './src/GameEditor/**/*.ts',
      ]).pipe(gulptsc({
+        tscPath: './node_modules/typescript/lib/tsc.js',
         module: 'commonjs',
         target: 'es6',
         removeComments: true,
@@ -68,9 +69,7 @@ gulp.task('compile-game-editor', ['compile-editor'], function () {
 
 gulp.task('compile-editor', ['compile-engine'], function () {
     return gulp.src([
-        // './src/Editor/refs.ts',
         './build/gameEngine.d.ts',
-        './typings/game-engine/game-engine.d.ts',
         './src/Editor/core/SerializedObject.ts',
         './src/Editor/core/SerializedProperty.ts',
         './src/Editor/core/EditorGui.ts',

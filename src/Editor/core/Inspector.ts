@@ -24,7 +24,7 @@ class Inspector {
             inspectorComp.setAttribute('data-component-id', comp.instanceId);
             let compTitle = document.createElement('div') as HTMLDivElement;
             compTitle.classList.add('component-title');
-            compTitle.innerText = comp.name;
+            compTitle.innerText = Editor.getDisplayName(comp.name);
 
             inspectorComp.appendChild(compTitle);
             Editor.inspector = inspectorComp;
