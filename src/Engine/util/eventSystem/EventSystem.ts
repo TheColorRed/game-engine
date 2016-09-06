@@ -1,6 +1,9 @@
 enum Events {
     None, Create, Destroy, Alarm, Collision,
-    Keyboard, KeyPress, KeyRelease, MousePress, MouseRelease
+    // Keyboard events
+    Keyboard, KeyPress, KeyRelease,
+    // Mouse events
+    Mouse, MousePress, MouseRelease
 }
 
 class EventSystem {
@@ -35,7 +38,6 @@ class EventSystem {
         if (!event) { event = this.event; }
         switch (event) {
             case Events.Create:
-                console.log(this.createTriggered)
                 return this.createTriggered;
             case Events.Destroy:
                 return this.destroyTriggered;
@@ -67,7 +69,18 @@ class EventSystem {
                 }
                 return false;
                 // return this.keyReleaseTriggered;
+            case Events.Mouse:
+                for (let i = 0; i < Input.pressedButtons.length; i++) {
+                    console.log(Input.pressedButtons[i].value, this.mouseButton)
+                    if (Input.pressedButtons[i].value == this.mouseButton) {
+                        return true;
+                    }
+                }
+                return false;
+                // return this.mouseTriggered;
             case Events.MousePress:
+                return this.mouseTriggered;
+            case Events.MouseRelease:
                 return this.mouseTriggered;
             default:
                 return false;

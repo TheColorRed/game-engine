@@ -67,7 +67,15 @@ class EditorGui {
                             } else if (comp[property] instanceof EventSystem) {
                                 Object.getOwnPropertyNames(comp[property]).forEach(prop => {
                                     if (inputName == prop) {
-                                        if (prop == 'event') {
+                                        let type = input.getAttribute('data-type').toLowerCase();
+                                        if (type == 'number') {
+                                            let min = parseFloat(input.getAttribute('min'));
+                                            let max = parseFloat(input.getAttribute('max'));
+                                            let value = parseFloat(input.value);
+                                            if (min != NaN) { value = value < min ? min : value; }
+                                            if (max != NaN) { value = value > max ? max : value; }
+                                            comp[property][prop] = value;
+                                        }else if (prop == 'event') {
                                             comp[property][prop] = parseInt(input.value);
                                         } else {
                                             comp[property][prop] = input.value;
@@ -176,7 +184,7 @@ class EditorGui {
             EditorGui.propertyField(key);
         }
         // Mouse Events
-        else if (event.value == Events.MousePress || event.value == Events.MouseRelease) {
+        else if (event.value == Events.Mouse || event.value == Events.MousePress || event.value == Events.MouseRelease) {
             let mouseButton: SerializedProperty = obj.findProperty('mouseButton');
             EditorGui.propertyField(mouseButton);
         }
